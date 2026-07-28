@@ -4,7 +4,8 @@ import { Memory } from "./memory";
 export class AssetManager {
 
     public static async loadSprites(jsonPathList: string[]): Promise<SimpleSprite[]> {
-        // TODO: carregar todos os jsons
+        // 1. Carregar todos os jsons
+        const jsonList = await Memory.loadJsons(jsonPathList);
         // TODO: separar os paths das imagens
         // TODO: remover duplicidades nos paths das imagens
         // TODO: carregar todas as imagens

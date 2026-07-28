@@ -1,0 +1,5 @@
+// para static link no windows, adicionar as diretivas abaixo
+-static -lwinmm -loleaut32 -lSetupapi -lImm32 -lVersion -lOle32 -static-libgcc -static-libstdc++
+
+// para static link no linux, adicionar as diretivas abaixo
+-Wl,-rpath,[path to sdl lib] -Wl,--enable-new-dtags -Wl,-Bstatic -Wl,-Bdynamic -lm -ldl -lpthread -lrt

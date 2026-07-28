@@ -1,0 +1,118 @@
+{
+    "type": "animated",
+    "imagePath": "imgs/sprite_person_bola.png",
+    "posX": 350,
+    "posY": 200,
+    "speedX": 0,
+    "speedY": 0,
+    "animations": {
+        "idle": {
+            "startIndex": 0,
+            "endIndex": 1,
+            "frameDuration": 0.5
+        },
+        "run": {
+            "startIndex": 2,
+            "endIndex": 5,
+            "frameDuration": 0.1
+        }
+    },
+    "frames": [
+        {
+            "cutRect": {
+                "x": 0,
+                "y": 0,
+                "w": 100,
+                "h": 100
+            },
+            "collisionBoxes": [
+                {
+                    "offsetX": 10,
+                    "offsetY": 10,
+                    "w": 80,
+                    "h": 80
+                }
+            ]
+        },
+        {
+            "cutRect": {
+                "x": 100,
+                "y": 0,
+                "w": 100,
+                "h": 100
+            },
+            "collisionBoxes": [
+                {
+                    "offsetX": 10,
+                    "offsetY": 10,
+                    "w": 80,
+                    "h": 80
+                }
+            ]
+        },
+        {
+            "cutRect": {
+                "x": 200,
+                "y": 0,
+                "w": 100,
+                "h": 100
+            },
+            "collisionBoxes": [
+                {
+                    "offsetX": 10,
+                    "offsetY": 15,
+                    "w": 80,
+                    "h": 75
+                }
+            ]
+        },
+        {
+            "cutRect": {
+                "x": 300,
+                "y": 0,
+                "w": 100,
+                "h": 100
+            },
+            "collisionBoxes": [
+                {
+                    "offsetX": 10,
+                    "offsetY": 15,
+                    "w": 80,
+                    "h": 75
+                }
+            ]
+        },
+        {
+            "cutRect": {
+                "x": 400,
+                "y": 0,
+                "w": 100,
+                "h": 100
+            },
+            "collisionBoxes": [
+                {
+                    "offsetX": 10,
+                    "offsetY": 15,
+                    "w": 80,
+                    "h": 75
+                }
+            ]
+        },
+        {
+            "cutRect": {
+                "x": 500,
+                "y": 0,
+                "w": 100,
+                "h": 100
+            },
+            "collisionBoxes": [
+                {
+                    "offsetX": 10,
+                    "offsetY": 15,
+                    "w": 80,
+                    "h": 75
+                }
+            ]
+        }
+    ]
+}

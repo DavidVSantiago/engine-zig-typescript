@@ -1,0 +1,26 @@
+{
+    "type": "simple",
+    "imagePath": "imgs/sprite_inimigo.png",
+    "posX": 50,
+    "posY": 200,
+    "speedX": 0,
+    "speedY": 0,
+    "frames": [
+        {
+            "cutRect": {
+                "x": 300,
+                "y": 100,
+                "w": 100,
+                "h": 100
+            },
+            "collisionBoxes": [
+                {
+                    "offsetX": 0,
+                    "offsetY": 0,
+                    "w": 100,
+                    "h": 100
+                }
+            ]
+        }
+    ]
+}

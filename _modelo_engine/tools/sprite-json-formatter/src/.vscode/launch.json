@@ -1,0 +1,26 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "name": "Debug C++",
+        "type": "cppdbg",
+        "request": "launch",
+        "program": "${workspaceFolder}/a.out", // Substitua pelo caminho do seu executável
+        "args": [], // Argumentos para o programa, se necessário
+        "stopAtEntry": false,
+        "cwd": "${workspaceFolder}",
+        "environment": [],
+        "externalConsole": true,
+        "MIMode": "gdb", // ou "lldb" se estiver no macOS
+        "setupCommands": [
+          {
+            "description": "Habilitar formatação para GDB",
+            "text": "-enable-pretty-printing",
+            "ignoreFailures": true
+          }
+        ],
+        "preLaunchTask": "build" // Nome da tarefa de compilação
+      }
+    ]
+  }
+  

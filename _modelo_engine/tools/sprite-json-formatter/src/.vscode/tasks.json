@@ -1,0 +1,21 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+      {
+        "label": "build", // Nome da tarefa
+        "type": "shell",
+        "command": "g++", // Substitua por clang++ se usar Clang
+        "args": [
+          "-g", // Adiciona símbolos de depuração
+          "${file}",
+          "-o",
+          "${fileDirname}/a.out" // Gera um executável chamado a.out
+        ],
+        "group": {
+          "kind": "build",
+          "isDefault": true
+        }
+      }
+    ]
+  }
+  

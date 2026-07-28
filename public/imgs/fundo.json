@@ -1,0 +1,26 @@
+{
+    "type": "simple",
+    "imagePath": "imgs/bg.png",
+    "posX": 0,
+    "posY": 0,
+    "speedX": 0,
+    "speedY": 0,
+    "frames": [
+        {
+            "cutRect": {
+                "x": 0,
+                "y": 0,
+                "w": 640,
+                "h": 480
+            },
+            "collisionBoxes": [
+                {
+                    "offsetX": 0,
+                    "offsetY": 0,
+                    "w": 640,
+                    "h": 480
+                }
+            ]
+        }
+    ]
+}

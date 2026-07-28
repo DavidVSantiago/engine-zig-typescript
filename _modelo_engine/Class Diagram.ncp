@@ -1,0 +1,247 @@
+<Project>
+  <Name>ALGOL_ENGINE</Name>
+  <ProjectItem type="NClass.DiagramEditor.ClassDiagram.Diagram" assembly="NClass.DiagramEditor, Version=2.4.1823.0, Culture=neutral, PublicKeyToken=null">
+    <Name>Diagrama de classes</Name>
+    <Language>CSharp</Language>
+    <Entities>
+      <Entity type="Class">
+        <Name>Resources</Name>
+        <Access>Public</Access>
+        <Location left="438" top="43" />
+        <Size width="294" height="400" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">private static Resources instance</Member>
+        <Member type="Field">private unordered_map&lt;string, BufferedImage&gt; imagesMap</Member>
+        <Member type="Field">public float deltaTime</Member>
+        <Member type="Field">public bool vk_up</Member>
+        <Member type="Field">public bool vk_down</Member>
+        <Member type="Field">public bool vk_left</Member>
+        <Member type="Field">public bool vk_right</Member>
+        <Member type="Field">public int screenWidth</Member>
+        <Member type="Field">public int screenHeight</Member>
+        <Member type="Field">public SDL_Window window</Member>
+        <Member type="Field">public SDL_Renderer renderer</Member>
+        <Member type="Field">public string PATH_IMGS_ASSETS</Member>
+        <Member type="Constructor">private Resources()</Member>
+        <Member type="Destructor">~Resources()</Member>
+        <Member type="Method">public static Resources getInstance()</Member>
+        <Member type="Method">public void init(int width, int height)</Member>
+        <Member type="Method">public uint64_t getTimeTick()</Member>
+        <Member type="Method">public bool loadImage(string fileName, string fileExt)</Member>
+        <Member type="Method">public BufferedImage getImage(string imageName)</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>Sprite</Name>
+        <Access>Public</Access>
+        <Location left="959" top="1101" />
+        <Size width="200" height="400" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">public BufferedImage image</Member>
+        <Member type="Field">public vector&lt;SDL_Rect&gt; frameArray</Member>
+        <Member type="Field">public vector&lt;SDL_Rect&gt; destArray</Member>
+        <Member type="Field">public uint16_t frameIndex</Member>
+        <Member type="Field">public vector&lt;CollisionSet&gt; collSetArray</Member>
+        <Member type="Field">public float posX</Member>
+        <Member type="Field">public float posY</Member>
+        <Member type="Field">public float speedX</Member>
+        <Member type="Field">public float speedY</Member>
+        <Member type="Field">public Resources res</Member>
+        <Member type="Constructor">public Sprite(BufferedImage image)</Member>
+        <Member type="Destructor">~Sprite()</Member>
+        <Member type="Method">public SDL_Rect getFrame()</Member>
+        <Member type="Method">public SDL_Rect getDest()</Member>
+        <Member type="Method">public void update()</Member>
+        <Member type="Method">public void render()</Member>
+        <Member type="Method">public void move()</Member>
+        <Member type="Method">public void unmove()</Member>
+        <Member type="Method">public void updateCollBoxes()</Member>
+        <Modifier>Abstract</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>SimpleSprite</Name>
+        <Access>Public</Access>
+        <Location left="800" top="1577" />
+        <Size width="214" height="162" />
+        <Collapsed>False</Collapsed>
+        <Member type="Constructor">public SimpleSprite(BufferedImage image)</Member>
+        <Member type="Destructor">~SimpleSprite()</Member>
+        <Member type="Method">public SDL_Rect getFrame()</Member>
+        <Member type="Method">public SDL_Rect getDest()</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>MultiSimpleSprite</Name>
+        <Access>Public</Access>
+        <Location left="1128" top="1577" />
+        <Size width="368" height="179" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">public uint16_t frameIndex</Member>
+        <Member type="Field">public uint16_t frameArraySize</Member>
+        <Member type="Constructor">public MultiSimpleSprite(BufferedImage image, uint8_t lines, uint8_t cols)</Member>
+        <Member type="Destructor">~MultiSimpleSprite()</Member>
+        <Member type="Method">public SDL_Rect getFrame()</Member>
+        <Member type="Method">public SDL_Rect getDest()</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>AnimatedSprite</Name>
+        <Access>Public</Access>
+        <Location left="1128" top="1811" />
+        <Size width="368" height="179" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">public float frameTime</Member>
+        <Member type="Field">public float accTime</Member>
+        <Member type="Method">private void changeFrame()</Member>
+        <Member type="Constructor">public AnimatedSprite(BufferedImage image, uint8_t lines, uint8_t cols)</Member>
+        <Member type="Destructor">~AnimatedSprite()</Member>
+        <Member type="Method">public SDL_Rect getFrame()</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>SceneLayer</Name>
+        <Access>Public</Access>
+        <Location left="1156" top="746" />
+        <Size width="187" height="281" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">private Sprite spriteList</Member>
+        <Member type="Field">private uint8_t spriteListCapacity</Member>
+        <Member type="Field">private uint8_t spriteListSize</Member>
+        <Member type="Field">public Resources res</Member>
+        <Member type="Field">public float posX</Member>
+        <Member type="Field">public float posY</Member>
+        <Member type="Constructor">public SceneLayer()</Member>
+        <Member type="Destructor">~SceneLayer()</Member>
+        <Member type="Method">public void render()</Member>
+        <Member type="Method">public void addSprite(Sprite sprite)</Member>
+        <Member type="Method">public Sprite getSprite(int index)</Member>
+        <Member type="Method">public void move()</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>Scene</Name>
+        <Access>Public</Access>
+        <Location left="1317" top="367" />
+        <Size width="237" height="298" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">protected string name</Member>
+        <Member type="Field">protected Resources res</Member>
+        <Member type="Field">protected SceneLayer layersList</Member>
+        <Member type="Field">protected uint8_t layersListCapacity</Member>
+        <Member type="Field">protected uint8_t layersListSize</Member>
+        <Member type="Constructor">public Scene()</Member>
+        <Member type="Destructor">~Scene()</Member>
+        <Member type="Method">public abstract void handleEvents()</Member>
+        <Member type="Method">public abstract void update()</Member>
+        <Member type="Method">public void render()</Member>
+        <Member type="Method">public void addLayer(vector&lt;Sprite&gt; spriteList)</Member>
+        <Member type="Method">public SceneLayer getLayer(int index)</Member>
+        <Member type="Method">public void move()</Member>
+        <Modifier>Abstract</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>SimpleScene</Name>
+        <Access>Public</Access>
+        <Location left="1524" top="746" />
+        <Size width="162" height="145" />
+        <Collapsed>False</Collapsed>
+        <Member type="Constructor">public SimpleScene()</Member>
+        <Member type="Destructor">~SimpleScene()</Member>
+        <Member type="Method">public void update()</Member>
+        <Member type="Method">public abstract void checkCollisions()</Member>
+        <Modifier>Abstract</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>SceneManager</Name>
+        <Access>Public</Access>
+        <Location left="774" top="43" />
+        <Size width="162" height="77" />
+        <Collapsed>False</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Comment">
+        <Text>Possui apenas um único quadro de sprite</Text>
+        <Location left="651" top="1514" />
+        <Size width="222" height="50" />
+      </Entity>
+      <Entity type="Comment">
+        <Text>Possui vários quadros. Cada quadro é usado para representar um estado, não quadros de uma animação!</Text>
+        <Location left="1408" top="1484" />
+        <Size width="226" height="62" />
+      </Entity>
+      <Entity type="Comment">
+        <Text>Possui vários quadros. Cada quadro é usado para representar um quadro da animação.</Text>
+        <Location left="1518" top="1750" />
+        <Size width="184" height="62" />
+      </Entity>
+    </Entities>
+    <Relationships>
+      <Relationship type="Generalization" first="2" second="1">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <BendPoint relativeToStartShape="False">
+          <X>1035</X>
+          <Y>1526</Y>
+        </BendPoint>
+      </Relationship>
+      <Relationship type="Generalization" first="3" second="1">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <BendPoint relativeToStartShape="False">
+          <X>1085</X>
+          <Y>1526</Y>
+        </BendPoint>
+      </Relationship>
+      <Relationship type="Generalization" first="4" second="3">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+      </Relationship>
+      <Relationship type="Association" first="6" second="5">
+        <Label>Possui um lista</Label>
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>1415</X>
+          <Y>693</Y>
+        </BendPoint>
+        <Direction>Unidirectional</Direction>
+        <AssociationType>Composition</AssociationType>
+        <StartMultiplicity>1</StartMultiplicity>
+        <EndMultiplicity>1..*</EndMultiplicity>
+      </Relationship>
+      <Relationship type="Generalization" first="7" second="6">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <BendPoint relativeToStartShape="False">
+          <X>1457</X>
+          <Y>693</Y>
+        </BendPoint>
+      </Relationship>
+      <Relationship type="Association" first="5" second="1">
+        <Label>Possui um lista</Label>
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <Direction>Unidirectional</Direction>
+        <AssociationType>Aggregation</AssociationType>
+        <StartMultiplicity>1</StartMultiplicity>
+        <EndMultiplicity>1..*</EndMultiplicity>
+      </Relationship>
+      <Relationship type="Comment" first="9" second="2">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+      </Relationship>
+      <Relationship type="Comment" first="10" second="3">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+      </Relationship>
+      <Relationship type="Comment" first="11" second="4">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>1551</X>
+          <Y>1863</Y>
+        </BendPoint>
+      </Relationship>
+    </Relationships>
+  </ProjectItem>
+</Project>

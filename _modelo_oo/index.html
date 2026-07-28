@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<style>
+		body {
+			margin: 0px;
+			padding: 0px;
+		}
+		.piece1 {
+			background-position:0 0
+		}
+
+		.piece2 {
+			background-position:-100px -100px
+		}
+	</style>
+	<title>Page Title</title>
+</head>
+
+<body>
+	
+	<canvas id="tela" width="640" height="480"></canvas>
+	<div style="display:none;">
+		<img id="sprite" src="sprite.png">
+	</div>
+
+	<script src="Recursos.js"> // deve ser importada antes de todas</script>
+	<script src="Personagem.js"> // deve ser importada antes da Game.js</script>
+	<script src="Inimigo.js"> // deve ser importada antes da Game.js</script>
+	<script src="Game.js">// deve ser importada por último</script>
+	
+
+</body>
+
+</html>

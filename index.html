@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Híbrida Engine - Teste DOD</title>
+    <style>
+        body {
+            background-color: #1a1a1a;
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: sans-serif;
+        }
+
+        canvas {
+            background-color: #000000;
+            /* Fundo preto padrão se a imagem falhar */
+            border: 4px solid #444;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+            image-rendering: pixelated;
+            /* Deixa sprites pixel-art mais nítidos */
+        }
+    </style>
+</head>
+
+<body>
+    <h2>Híbrida Game Engine</h2>
+    <!-- O tamanho do Canvas reflete o tamanho das Collision Boxes e Rectangles que você configurou -->
+    <canvas id="gameCanvas" width="640" height="480"></canvas>
+
+    <!-- O Vite vai ler esse TypeScript e compilar na hora para o navegador! -->
+    <script type="module" src="/src/game_ts/game.ts"></script>
+</body>
+
+</html>

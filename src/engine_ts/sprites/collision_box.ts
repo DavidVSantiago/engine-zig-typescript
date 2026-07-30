@@ -6,9 +6,39 @@ export class CollisionBox {
     public h: number;
 
     constructor(offsetX: number, offsetY: number, w: number, h: number) {
-        this.offsetX = offsetX;
-        this.offsetY = offsetY;
-        this.w = w;
-        this.h = h;
+        this.offsetX = offsetX << 8; // escala para fixed-point 8.8
+        this.offsetY = offsetY << 8; // escala para fixed-point 8.8
+        this.w = w << 8; // escala para fixed-point 8.8
+        this.h = h << 8; // escala para fixed-point 8.8
     }
-};
+
+    public static checkCollisions(
+        aList: CollisionBox[],
+        aPosX: number,
+        aPosY: number,
+        bList: CollisionBox[],
+        bPosX: number,
+        bPosY: number
+    ): boolean {
+        // Testa cada caixa da lista A contra cada caixa da lista B
+        for (const aBox of aList) {
+            for (const bBox of bList) {
+
+                // Posição global da caixa A (Posição do objeto + offset da caixa)
+                const aX = aPosX + aBox.offsetX;
+                const aY = aPosY + aBox.offsetY;
+
+                // Posição global da caixa B (Posição do objeto + offset da caixa)
+                const bX = bPosX + bBox.offsetX;
+                const bY = bPosY + bBox.offsetY;
+                // Verificação de AABB
+                const intersectX = (aX < bX + bBox.w) && (aX + aBox.w > bX);
+                const intersectY = (aY < bY + bBox.h) && (aY + aBox.h > bY);
+                if (intersectX && intersectY) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    };
+}

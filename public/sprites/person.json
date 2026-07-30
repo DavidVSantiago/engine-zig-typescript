@@ -1,0 +1,154 @@
+{
+    "type": "simple",
+    "imagePath": "imgs/sprite_person_bola.png",
+    "posX": 490,
+    "posY": 190,
+    "speedX": 0,
+    "speedY": 0,
+    "frames": [
+        {
+            "cutRect": {
+                "x": 0,
+                "y": 0,
+                "w": 100,
+                "h": 100
+            },
+            "collisionBoxes": [
+                {
+                    "offsetX": 0,
+                    "offsetY": 0,
+                    "w": 100,
+                    "h": 100
+                }
+            ]
+        },
+        {
+            "cutRect": {
+                "x": 100,
+                "y": 0,
+                "w": 100,
+                "h": 100
+            },
+            "collisionBoxes": [
+                {
+                    "offsetX": 0,
+                    "offsetY": 0,
+                    "w": 100,
+                    "h": 100
+                }
+            ]
+        },
+        {
+            "cutRect": {
+                "x": 200,
+                "y": 0,
+                "w": 100,
+                "h": 100
+            },
+            "collisionBoxes": [
+                {
+                    "offsetX": 0,
+                    "offsetY": 0,
+                    "w": 100,
+                    "h": 100
+                }
+            ]
+        },
+        {
+            "cutRect": {
+                "x": 300,
+                "y": 0,
+                "w": 100,
+                "h": 100
+            },
+            "collisionBoxes": [
+                {
+                    "offsetX": 0,
+                    "offsetY": 0,
+                    "w": 100,
+                    "h": 100
+                }
+            ]
+        },
+        {
+            "cutRect": {
+                "x": 400,
+                "y": 0,
+                "w": 100,
+                "h": 100
+            },
+            "collisionBoxes": [
+                {
+                    "offsetX": 0,
+                    "offsetY": 0,
+                    "w": 100,
+                    "h": 100
+                }
+            ]
+        },
+        {
+            "cutRect": {
+                "x": 0,
+                "y": 100,
+                "w": 100,
+                "h": 100
+            },
+            "collisionBoxes": [
+                {
+                    "offsetX": 0,
+                    "offsetY": 0,
+                    "w": 100,
+                    "h": 100
+                }
+            ]
+        },
+        {
+            "cutRect": {
+                "x": 100,
+                "y": 100,
+                "w": 100,
+                "h": 100
+            },
+            "collisionBoxes": [
+                {
+                    "offsetX": 0,
+                    "offsetY": 0,
+                    "w": 100,
+                    "h": 100
+                }
+            ]
+        },
+        {
+            "cutRect": {
+                "x": 200,
+                "y": 100,
+                "w": 100,
+                "h": 100
+            },
+            "collisionBoxes": [
+                {
+                    "offsetX": 0,
+                    "offsetY": 0,
+                    "w": 100,
+                    "h": 100
+                }
+            ]
+        },
+        {
+            "cutRect": {
+                "x": 300,
+                "y": 100,
+                "w": 100,
+                "h": 100
+            },
+            "collisionBoxes": [
+                {
+                    "offsetX": 0,
+                    "offsetY": 0,
+                    "w": 100,
+                    "h": 100
+                }
+            ]
+        }
+    ]
+}

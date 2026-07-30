@@ -1,5 +1,5 @@
 // engine_ts/memory.ts
-export class Memory {
+export class FileIO {
 
     /** Recebe uma lista de caminhos de JSONs e retorna uma lista (promise) dos objetos JSON carregados */
     public static async loadJsons<T = any>(pathList: string[]): Promise<T[]> {

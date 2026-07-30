@@ -1,13 +1,12 @@
 import { SimpleSprite } from "../sprites/simple_sprite";
-
-export type AnySprite = SimpleSprite; // | MultiSimpleSprite
+import { ISprite } from "../sprites/i_sprite";
 
 export class SimpleSceneLayer {
     public posX: number; // posição x do layer na tela (relativa à origem do jogo)
     public posY: number; // posição y do layer na tela (relativa à origem do jogo)
-    private spriteList: AnySprite[]; // lista de sprites desse layer
+    private spriteList: ISprite[]; // interface dos sprites desse layer
 
-    constructor(posX: number = 0, posY: number = 0, spriteList: AnySprite[]) {
+    constructor(posX: number = 0, posY: number = 0, spriteList: ISprite[]) {
         this.posX = posX;
         this.posY = posY;
         this.spriteList = spriteList;
@@ -17,9 +16,14 @@ export class SimpleSceneLayer {
     /** MÉTODOS */
     /**********************************************************/
 
-    public move(): void {
+    public moveX(): void {
         for (let i = 0; i < this.spriteList.length; i++) {
-            this.spriteList[i].move();
+            this.spriteList[i].moveX();
+        }
+    }
+    public moveY(): void {
+        for (let i = 0; i < this.spriteList.length; i++) {
+            this.spriteList[i].moveY();
         }
     }
 

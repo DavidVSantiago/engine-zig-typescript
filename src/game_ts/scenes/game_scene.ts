@@ -11,7 +11,7 @@ import { ISprite } from "../../engine_ts/sprites/i_sprite";
 export class GameScene {
     public readonly type = 'Game';
 
-    public scene!: SimpleScene;
+    public base!: SimpleScene;
 
     public fundo!: SimpleSprite;
     public person!: SimpleSprite;
@@ -69,12 +69,31 @@ export class GameScene {
         ];
 
         // adiciona os layers na cena
-        this.scene = new SimpleScene(layerList);
+        this.base = new SimpleScene(layerList);
 
     }
 
     /**********************************************************/
     /** MÉTODOS GAMELOOP*/
+    /**********************************************************/
+
+    public update(): void {
+        this.handleInput();
+
+        this.base.moveX();
+        this.checkCollisionsX();
+        this.base.moveY();
+        this.checkCollisionsY();
+
+    }
+
+    public render(ctx: CanvasRenderingContext2D): void {
+        this.base.render(ctx);
+
+    }
+
+    /**********************************************************/
+    /** OUTROS MÉTODOS */
     /**********************************************************/
 
     public handleInput(): void {
@@ -112,25 +131,6 @@ export class GameScene {
             this.person.currentFrame = 3; // direita
         }
     }
-
-    public update(): void {
-        this.handleInput();
-
-        this.scene.moveX();
-        this.checkCollisionsX();
-        this.scene.moveY();
-        this.checkCollisionsY();
-
-    }
-
-    public render(ctx: CanvasRenderingContext2D): void {
-        this.scene.render(ctx);
-
-    }
-
-    /**********************************************************/
-    /** OUTROS MÉTODOS */
-    /**********************************************************/
 
     public checkCollisionsX(): void {
         if ((this.person.getPosX() + this.person.getWidth()) > (640 << 8)) this.person.setPosX((640 << 8) - this.person.getWidth());

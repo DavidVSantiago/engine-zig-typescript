@@ -1,19 +1,29 @@
-import { Engine } from "../engine_ts/engine";
+import { engine } from "../engine_ts/engine";
 import { GameScene } from "./scenes/game_scene";
-import { SplashScene } from "./scenes/splash_scene";
+import { LoadingScene } from "./scenes/loading_scene";
 
 async function startGame() {
     // cria a cena inicial e carrega todos os seus assets em memória
-    const startScene = new SplashScene();
-    await startScene.init();
+    const loadingScene = new LoadingScene();
+    await loadingScene.init();
 
-    // cria engine
-    const engine = new Engine();
+    // cria a cena inicial e carrega todos os seus assets em memória
+    const gameScene = new GameScene();
+    await gameScene.init();
 
-    // define a cena (passando os ponteiros para as funções)
+    engine.init(); // obrigatório chamar antes de usar engine
+
+    engine.setLoadingScene({
+        init: () => loadingScene.init(),
+        update: () => loadingScene.update(),
+        render: (ctx) => loadingScene.render(ctx),
+    });
+
+    // define a cena inicial(passando os ponteiros para as funções)
     engine.setScene({
-        update: () => startScene.update(),
-        render: (ctx) => startScene.render(ctx),
+        init: () => gameScene.init(),
+        update: () => gameScene.update(),
+        render: (ctx) => gameScene.render(ctx),
     });
 
     // inicia engine

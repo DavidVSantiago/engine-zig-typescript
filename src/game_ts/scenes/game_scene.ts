@@ -1,12 +1,11 @@
 import { SimpleScene } from "../../engine_ts/scenes/simple_scene";
 import { SimpleSceneLayer } from "../../engine_ts/scenes/simple_scene_layer";
 import { SimpleSprite, } from "../../engine_ts/sprites/simple_sprite";
-import { Rectangle } from "../../engine_ts/structures/rectangle";
-import { CollisionBox as CB } from "../../engine_ts/sprites/collision_box";
-import { FileIO } from "../../engine_ts/utils/file_io";
 import { AssetManager } from "../../engine_ts/utils/asset_manager";
 import { InputManager as IM } from "../../engine_ts/utils/input_manager";
 import { ISprite } from "../../engine_ts/sprites/i_sprite";
+import { engine } from "../../engine_ts/engine";
+import { timer } from "../../engine_ts/utils/timer";
 
 export class GameScene {
     public readonly type = 'Game';
@@ -17,6 +16,7 @@ export class GameScene {
     public person!: SimpleSprite;
     public inimigo!: SimpleSprite;
     public bolinha!: SimpleSprite;
+    public agendou = false;
 
     public async init() {
         // carrega os sprites
@@ -70,7 +70,6 @@ export class GameScene {
 
         // adiciona os layers na cena
         this.base = new SimpleScene(layerList);
-
     }
 
     /**********************************************************/
@@ -85,6 +84,13 @@ export class GameScene {
         this.base.moveY();
         this.checkCollisionsY();
 
+        if (!this.agendou) {
+            this.agendou = true;
+            timer.start(120, () => {
+                const nextScene = new GameScene();
+                engine.changeScene(nextScene, 60);
+            });
+        }
     }
 
     public render(ctx: CanvasRenderingContext2D): void {

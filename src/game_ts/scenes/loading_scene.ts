@@ -4,8 +4,8 @@ import { SimpleSprite, } from "../../engine_ts/sprites/simple_sprite";
 import { AssetManager } from "../../engine_ts/utils/asset_manager";
 import { ISprite } from "../../engine_ts/sprites/i_sprite";
 
-export class SplashScene {
-    public readonly type = 'Splash';
+export class LoadingScene {
+    public readonly type = 'Loading';
 
     public base!: SimpleScene;
 
@@ -16,6 +16,7 @@ export class SplashScene {
         const spriteList: SimpleSprite[] = await AssetManager.loadSprites([
             'sprites/splash.json'
         ]);
+
         // armazena as refs dos sprites
         this.fundo = spriteList[0];
         this.fundo.setPosX((320 << 8) - (this.fundo.getWidth() >> 1));

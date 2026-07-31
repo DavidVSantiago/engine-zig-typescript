@@ -1,4 +1,4 @@
-import { SimpleSprite } from "../sprites/simple_sprite";
+
 import { ISprite } from "../sprites/i_sprite";
 
 export class SimpleSceneLayer {

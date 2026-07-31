@@ -21,8 +21,10 @@ export class CollisionBox {
         bPosY: number
     ): boolean {
         // Testa cada caixa da lista A contra cada caixa da lista B
-        for (const aBox of aList) {
-            for (const bBox of bList) {
+        for (let i = 0; i < aList.length; i++) {
+            const aBox = aList[i];
+            for (let j = 0; j < bList.length; j++) {
+                const bBox = bList[j];
 
                 // Posição global da caixa A (Posição do objeto + offset da caixa)
                 const aX = aPosX + aBox.offsetX;
@@ -34,9 +36,7 @@ export class CollisionBox {
                 // Verificação de AABB
                 const intersectX = (aX < bX + bBox.w) && (aX + aBox.w > bX);
                 const intersectY = (aY < bY + bBox.h) && (aY + aBox.h > bY);
-                if (intersectX && intersectY) {
-                    return true;
-                }
+                if (intersectX && intersectY) return true;
             }
         }
         return false;

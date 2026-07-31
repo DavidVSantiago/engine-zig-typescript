@@ -1,0 +1,110 @@
+{
+    "imagePath": "imgs/sprite_person_bola.png",
+    "type": "animated_sprite",
+    "posX": 350,
+    "posY": 200,
+    "speedX": 0,
+    "speedY": 0,
+    "width": 100,
+    "height": 100,
+    "drawWidth": 30,
+    "drawHeight": 30,
+    "animations": {
+        "idle": {
+            "startIndex": 0,
+            "endIndex": 1,
+            "frameDuration": 0.5
+        },
+        "run": {
+            "startIndex": 2,
+            "endIndex": 5,
+            "frameDuration": 0.1
+        }
+    },
+    "frames": [
+        {
+            "collisionBoxes": [
+                {
+                    "offsetX": 10,
+                    "offsetY": 10,
+                    "w": 80,
+                    "h": 80
+                }
+            ],
+            "cutX": 0,
+            "cutY": 0,
+            "cutW": 100,
+            "cutH": 100
+        },
+        {
+            "collisionBoxes": [
+                {
+                    "offsetX": 10,
+                    "offsetY": 10,
+                    "w": 80,
+                    "h": 80
+                }
+            ],
+            "cutX": 100,
+            "cutY": 0,
+            "cutW": 100,
+            "cutH": 100
+        },
+        {
+            "collisionBoxes": [
+                {
+                    "offsetX": 10,
+                    "offsetY": 15,
+                    "w": 80,
+                    "h": 75
+                }
+            ],
+            "cutX": 200,
+            "cutY": 0,
+            "cutW": 100,
+            "cutH": 100
+        },
+        {
+            "collisionBoxes": [
+                {
+                    "offsetX": 10,
+                    "offsetY": 15,
+                    "w": 80,
+                    "h": 75
+                }
+            ],
+            "cutX": 300,
+            "cutY": 0,
+            "cutW": 100,
+            "cutH": 100
+        },
+        {
+            "collisionBoxes": [
+                {
+                    "offsetX": 10,
+                    "offsetY": 15,
+                    "w": 80,
+                    "h": 75
+                }
+            ],
+            "cutX": 400,
+            "cutY": 0,
+            "cutW": 100,
+            "cutH": 100
+        },
+        {
+            "collisionBoxes": [
+                {
+                    "offsetX": 10,
+                    "offsetY": 15,
+                    "w": 80,
+                    "h": 75
+                }
+            ],
+            "cutX": 500,
+            "cutY": 0,
+            "cutW": 100,
+            "cutH": 100
+        }
+    ]
+}

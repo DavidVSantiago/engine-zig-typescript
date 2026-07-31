@@ -1,18 +1,16 @@
 {
-    "type": "simple",
     "imagePath": "imgs/sprite_person_bola.png",
+    "type": "multi_sprite",
     "posX": 305,
     "posY": 225,
     "speedX": 0,
     "speedY": 0,
+    "width": 30,
+    "height": 30,
+    "drawWidth": 30,
+    "drawHeight": 30,
     "frames": [
         {
-            "cutRect": {
-                "x": 400,
-                "y": 100,
-                "w": 30,
-                "h": 30
-            },
             "collisionBoxes": [
                 {
                     "offsetX": 0,
@@ -20,7 +18,9 @@
                     "w": 30,
                     "h": 30
                 }
-            ]
+            ],
+            "cutX": 400,
+            "cutY": 100
         }
     ]
 }

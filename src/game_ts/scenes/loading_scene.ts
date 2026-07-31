@@ -1,26 +1,27 @@
 import { SimpleScene } from "../../engine_ts/scenes/simple_scene";
 import { SimpleSceneLayer } from "../../engine_ts/scenes/simple_scene_layer";
-import { SimpleSprite, } from "../../engine_ts/sprites/simple_sprite";
+import { MultiSprite, } from "../../engine_ts/sprites/multi_sprite";
 import { AssetManager } from "../../engine_ts/utils/asset_manager";
 import { ISprite } from "../../engine_ts/sprites/i_sprite";
+import { SingleSprite } from "../../engine_ts/sprites/single_sprite";
 
 export class LoadingScene {
     public readonly type = 'Loading';
 
     public base!: SimpleScene;
 
-    public fundo!: SimpleSprite;
+    public fundo!: SingleSprite;
 
     public async init() {
         // carrega os sprites
-        const spriteList: SimpleSprite[] = await AssetManager.loadSprites([
-            'sprites/splash.json'
+        const spriteList: SingleSprite[] = await AssetManager.loadSingleSprites([
+            'sprites/splash.spr'
         ]);
 
         // armazena as refs dos sprites
         this.fundo = spriteList[0];
-        this.fundo.setPosX((320 << 8) - (this.fundo.getWidth() >> 1));
-        this.fundo.setPosY((240 << 8) - (this.fundo.getHeight() >> 1));
+        this.fundo.setPosX((320 << 8) - (this.fundo.getDrawWidth() >> 1));
+        this.fundo.setPosY((240 << 8) - (this.fundo.getDrawHeigth() >> 1));
 
         // cria os VTable's dos sprites
         const iSpriteFundo: ISprite = {

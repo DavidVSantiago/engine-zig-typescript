@@ -1,0 +1,18 @@
+{
+    "imagePath": "imgs/loading.png",
+    "type": "single_sprite",
+    "posX": 0,
+    "posY": 0,
+    "speedX": 0,
+    "speedY": 0,
+    "width": 188,
+    "height": 46,
+    "drawWidth": 188,
+    "drawHeight": 46,
+    "frames": [
+        {
+            "cutX": 0,
+            "cutY": 0
+        }
+    ]
+}

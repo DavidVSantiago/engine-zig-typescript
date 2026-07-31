@@ -1,0 +1,18 @@
+{
+    "imagePath": "imgs/bg.png",
+    "type": "single_sprite",
+    "posX": 0,
+    "posY": 0,
+    "speedX": 0,
+    "speedY": 0,
+    "width": 640,
+    "height": 480,
+    "drawWidth": 640,
+    "drawHeight": 480,
+    "frames": [
+        {
+            "cutX": 0,
+            "cutY": 0
+        }
+    ]
+}

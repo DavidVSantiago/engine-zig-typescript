@@ -1,0 +1,18 @@
+{
+    "imagePath": "imgs/sprite_person_bola.png",
+    "type": "single_sprite",
+    "posX": 0,
+    "posY": 0,
+    "speedX": 0,
+    "speedY": 0,
+    "width": 5,
+    "height": 1,
+    "drawWidth": 5,
+    "drawHeight": 640,
+    "frames": [
+        {
+            "cutX": 430,
+            "cutY": 100
+        }
+    ]
+}

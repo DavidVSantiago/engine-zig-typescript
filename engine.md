@@ -4,24 +4,22 @@ classDiagram
 
     class Engine {
         <<Singleton>>
-        currentScene: IScene
-        loadingScene: IScene
+        currentScene: SceneUnion
+        loadingScene: SceneUnion
         changeScene()
         gameLoop()
     }
 
-    class IScene {
-        <<VTable / Function Pointers>>
-        init() Promise
-        update() void
-        render(ctx) void
+    class SceneUnion {
+        <<Discriminated Union>>
+        type: string
+        scene: GameScene | LoadingScene
     }
 
-    class ISprite {
-        <<VTable / Function Pointers>>
-        moveX() void
-        moveY() void
-        render(ctx) void
+    class SpriteUnion {
+        <<Discriminated Union>>
+        type: string
+        sprite: SingleSprite | MultiSprite
     }
 
     class SimpleScene {
@@ -34,7 +32,7 @@ classDiagram
         posY: int
     }
 
-    class SimpleSprite {
+    class SingleSprite {
         <<Entity / Manual Control>>
         image: HTMLImageElement
         posX: int
@@ -42,6 +40,10 @@ classDiagram
         speedX: int
         speedY: int
         currentFrame: int
+    }
+
+    class MultiSprite {
+        <<Entity / Animated>>
     }
 
     class Frame {
@@ -64,13 +66,13 @@ classDiagram
         h: int
     }
 
-    Engine --> "1" IScene : executa
+    Engine --> "1" SceneUnion : executa
     SimpleScene *-- "N" SimpleSceneLayer : array de (layerList)
-    SimpleSceneLayer *-- "N" ISprite : array de (spriteList)
+    SimpleSceneLayer *-- "N" SpriteUnion : array de (spriteList)
 
     
-    SimpleSprite *-- "N" Frame : array de (frameList)
-    AnimatedSprite *-- "N" Frame : array de (frameList)
+    SingleSprite *-- "1" Frame : possui (frame)
+    MultiSprite *-- "N" Frame : array de (frameList)
     
     Frame *-- "1" Rectangle : possui (cutRect)
     Frame *-- "N" CollisionBox : array de (collisionBoxList)

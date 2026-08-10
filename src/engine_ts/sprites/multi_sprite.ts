@@ -60,9 +60,11 @@ export class MultiSprite {
     /**********************************************************/
 
     public moveX(): void {
+        this.base.prevPosX = this.base.posX;
         this.base.posX += this.base.speedX;
     }
     public moveY(): void {
+        this.base.prevPosY = this.base.posY;
         this.base.posY += this.base.speedY;
     }
 
@@ -74,15 +76,20 @@ export class MultiSprite {
     /** MÉTODOS GAMELOOP */
     /**********************************************************/
 
-    public render(ctx: CanvasRenderingContext2D): void {
+    public render(ctx: CanvasRenderingContext2D, alpha: number): void {
         const frame = this.frameList[this.currentFrame];
+
+        // Interpola a posição fixa no espaço
+        const interpX = Math.round(this.base.prevPosX + (this.base.posX - this.base.prevPosX) * alpha);
+        const interpY = Math.round(this.base.prevPosY + (this.base.posY - this.base.prevPosY) * alpha);
+
         // Converte sub-pixels para pixels reais na hora de desenhar (>> 8 = dividir por 256)
         const cutX = (frame.cutX >> 8);
         const cutY = (frame.cutY >> 8);
         const cutW = (this.base.width >> 8);
         const cutH = (this.base.heigth >> 8);
-        const drawX = (this.base.posX >> 8);
-        const drawY = (this.base.posY >> 8);
+        const drawX = (interpX >> 8);
+        const drawY = (interpY >> 8);
         const drawW = (this.base.drawWidth >> 8);
         const drawH = (this.base.drawHeigth >> 8);
         ctx.drawImage(

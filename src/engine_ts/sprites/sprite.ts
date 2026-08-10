@@ -5,6 +5,8 @@ export class Sprite {
     public image: HTMLImageElement; // representa o spritesheet
     public posX: number; // posição X em sub-pixels
     public posY: number; // posição Y em sub-pixels
+    public prevPosX: number; // posição X no tick anterior
+    public prevPosY: number; // posição Y no tick anterior
     public speedX: number; // velocidade X em sub-pixels por tick
     public speedY: number; // velocidade Y em sub-pixels por tick
     public speedBase: number; // velocidade base para movimentação
@@ -23,6 +25,8 @@ export class Sprite {
         this.image = image;
         this.posX = posX << 8; // escala para fixed-point 8.8
         this.posY = posY << 8; // escala para fixed-point 8.8
+        this.prevPosX = this.posX; // inicializa igual a posição atual
+        this.prevPosY = this.posY; // inicializa igual a posição atual
         this.speedX = speedX << 8; // escala para fixed-point 8.8
         this.speedY = speedY << 8; // escala para fixed-point 8.8
         this.width = width << 8; // escala para fixed-point 8.8

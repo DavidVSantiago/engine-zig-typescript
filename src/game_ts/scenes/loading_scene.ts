@@ -2,7 +2,7 @@ import { SimpleScene } from "../../engine_ts/scenes/simple_scene";
 import { SimpleSceneLayer } from "../../engine_ts/scenes/simple_scene_layer";
 import { MultiSprite, } from "../../engine_ts/sprites/multi_sprite";
 import { AssetManager } from "../../engine_ts/utils/asset_manager";
-import { ISprite } from "../../engine_ts/sprites/i_sprite";
+import { SpriteUnion } from "../../engine_ts/sprites/sprite_union";
 import { SingleSprite } from "../../engine_ts/sprites/single_sprite";
 
 export class LoadingScene {
@@ -23,16 +23,12 @@ export class LoadingScene {
         this.fundo.setPosX((320 << 8) - (this.fundo.getDrawWidth() >> 1));
         this.fundo.setPosY((240 << 8) - (this.fundo.getDrawHeigth() >> 1));
 
-        // cria os VTable's dos sprites
-        const iSpriteFundo: ISprite = {
-            moveX: () => this.fundo.moveX(),
-            moveY: () => this.fundo.moveY(),
-            render: (ctx) => this.fundo.render(ctx)
-        };
+        // cria a tag da união
+        const uFundo: SpriteUnion = { type: 'Single', sprite: this.fundo };
 
         // cria os layers da cena
         const layerList: SimpleSceneLayer[] = [
-            new SimpleSceneLayer(0, 0, [iSpriteFundo]),
+            new SimpleSceneLayer(0, 0, [uFundo]),
         ];
 
         // adiciona os layers na cena
@@ -50,8 +46,8 @@ export class LoadingScene {
 
     }
 
-    public render(ctx: CanvasRenderingContext2D): void {
-        this.base.render(ctx);
+    public render(ctx: CanvasRenderingContext2D, alpha: number): void {
+        this.base.render(ctx, alpha);
     }
 
     /**********************************************************/

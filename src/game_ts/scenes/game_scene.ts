@@ -4,7 +4,7 @@ import { MultiSprite } from "../../engine_ts/sprites/multi_sprite";
 import { SingleSprite } from "../../engine_ts/sprites/single_sprite";
 import { AssetManager } from "../../engine_ts/utils/asset_manager";
 import { InputManager as IM } from "../../engine_ts/utils/input_manager";
-import { ISprite } from "../../engine_ts/sprites/i_sprite";
+import { SpriteUnion } from "../../engine_ts/sprites/sprite_union";
 import { engine } from "../../engine_ts/engine";
 import { timer } from "../../engine_ts/utils/timer";
 
@@ -51,45 +51,27 @@ export class GameScene {
         this.person.setSpeedBase(3 << 8); // 3 pixels por tick (já em fixed-point)
         this.person.setPosX(490 << 8);
         this.person.setPosY(190 << 8);
-        this.inimigo.currentFrame = 8;
         this.inimigo.setSpeedBase(3 << 8); // 3 pixels por tick (já em fixed-point)
+        this.inimigo.currentFrame = 8;
+        this.bolinha.setSpeedBase(5 << 8);
+        this.bolinha.setSpeedX(this.bolinha.getSpeedBase() >> 1);
+        this.bolinha.setSpeedY(this.bolinha.getSpeedBase() >> 1);
+        this.bolinha.setPosX((320 << 8) - (this.bolinha.getWidth() >> 1));
+        this.bolinha.setPosY((240 << 8) - (this.bolinha.getWidth() >> 1));
 
-        // cria os VTable's dos sprites
-        const iSpriteFundo: ISprite = {
-            moveX: () => this.fundo.moveX(),
-            moveY: () => this.fundo.moveY(),
-            render: (ctx) => this.fundo.render(ctx)
-        };
-        const iSpriteFaixa_E: ISprite = {
-            moveX: () => this.faixa_E.moveX(),
-            moveY: () => this.faixa_E.moveY(),
-            render: (ctx) => this.faixa_E.render(ctx)
-        };
-        const iSpriteFaixa_D: ISprite = {
-            moveX: () => this.faixa_D.moveX(),
-            moveY: () => this.faixa_D.moveY(),
-            render: (ctx) => this.faixa_D.render(ctx)
-        };
-        const iSpritePerson: ISprite = {
-            moveX: () => this.person.moveX(),
-            moveY: () => this.person.moveY(),
-            render: (ctx) => this.person.render(ctx)
-        };
-        const iSpriteInimigo: ISprite = {
-            moveX: () => this.inimigo.moveX(),
-            moveY: () => this.inimigo.moveY(),
-            render: (ctx) => this.inimigo.render(ctx)
-        };
-        const iSpriteBolinha: ISprite = {
-            moveX: () => this.bolinha.moveX(),
-            moveY: () => this.bolinha.moveY(),
-            render: (ctx) => this.bolinha.render(ctx)
-        };
+        // cria as tags da união dos sprites
+        const uFundo: SpriteUnion = { type: 'Single', sprite: this.fundo };
+        const uFaixa_E: SpriteUnion = { type: 'Single', sprite: this.faixa_E };
+        const uFaixa_D: SpriteUnion = { type: 'Single', sprite: this.faixa_D };
+        
+        const uPerson: SpriteUnion = { type: 'Multi', sprite: this.person };
+        const uInimigo: SpriteUnion = { type: 'Multi', sprite: this.inimigo };
+        const uBolinha: SpriteUnion = { type: 'Multi', sprite: this.bolinha };
 
         // cria os layers da cena
         const layerList: SimpleSceneLayer[] = [
-            new SimpleSceneLayer(0, 0, [iSpriteFundo, iSpriteFaixa_E, iSpriteFaixa_D]),
-            new SimpleSceneLayer(0, 0, [iSpritePerson, iSpriteInimigo, iSpriteBolinha])
+            new SimpleSceneLayer(0, 0, [uFundo, uFaixa_E, uFaixa_D]),
+            new SimpleSceneLayer(0, 0, [uPerson, uInimigo, uBolinha])
         ];
 
         // adiciona os layers na cena
@@ -108,6 +90,9 @@ export class GameScene {
         this.base.moveY();
         this.checkCollisionsY();
 
+        // Colisões entre entidades (radiais, que dependem de X e Y simultaneamente)
+        this.checkCollisionsEntities();
+
         // if (!this.agendou) {
         //     this.agendou = true;
         //     timer.start(120, () => {
@@ -117,8 +102,8 @@ export class GameScene {
         // }
     }
 
-    public render(ctx: CanvasRenderingContext2D): void {
-        this.base.render(ctx);
+    public render(ctx: CanvasRenderingContext2D, alpha: number): void {
+        this.base.render(ctx, alpha);
 
     }
 
@@ -163,15 +148,92 @@ export class GameScene {
     }
 
     public checkCollisionsX(): void {
+        // colisão do jogador com o lado direito da tela
         if ((this.person.getPosX() + this.person.getWidth()) > (640 << 8)) this.person.setPosX((640 << 8) - this.person.getWidth());
 
         // colisão do jogador com o limite direito do campo ------------------------------
         if (this.person.getPosX() <= this.LIMITE_DIREITO) {
             this.person.setPosX(this.LIMITE_DIREITO);
-        } ''
+        }
+
+        // colisão da bolinha com os lados dir. e esq. da tela ------------------------------
+        if (this.bolinha.getPosX() < 0) {
+            this.bolinha.setPosX(0);
+            this.bolinha.setSpeedX(Math.abs(this.bolinha.getSpeedX())); // garante que a velocidade seja positiva
+        } else if ((this.bolinha.getPosX() + this.bolinha.getWidth()) > (640 << 8)) {
+            this.bolinha.setPosX((640 << 8) - this.bolinha.getWidth());
+            this.bolinha.setSpeedX(-Math.abs(this.bolinha.getSpeedX())); // garante que a velocidade seja negativa
+        }
     }
     public checkCollisionsY(): void {
         if (this.person.getPosY() < 0) this.person.setPosY(0);
         if ((this.person.getPosY() + this.person.getHeight()) > (480 << 8)) this.person.setPosY((480 << 8) - this.person.getHeight());
+
+        // colisão da bolinha com os lados sup. e inf. da tela ------------------------------
+        if (this.bolinha.getPosY() < 0) {
+            this.bolinha.setPosY(0);
+            this.bolinha.setSpeedY(Math.abs(this.bolinha.getSpeedY()));
+        } else if ((this.bolinha.getPosY() + this.bolinha.getHeight()) > (480 << 8)) {
+            this.bolinha.setPosY((480 << 8) - this.bolinha.getHeight());
+            this.bolinha.setSpeedY(-Math.abs(this.bolinha.getSpeedY()));
+        }
+    }
+
+    public checkCollisionsEntities(): void {
+        // Assume que a largura e altura são iguais e definem o diâmetro do círculo
+        const personRadius = this.person.getWidth() >> 1;
+        const bolinhaRadius = this.bolinha.getWidth() >> 1;
+
+        // Ponto central de cada sprite (posição atual + raio)
+        const personCenterX = this.person.getPosX() + personRadius;
+        const personCenterY = this.person.getPosY() + personRadius;
+
+        const bolinhaCenterX = this.bolinha.getPosX() + bolinhaRadius;
+        const bolinhaCenterY = this.bolinha.getPosY() + bolinhaRadius;
+
+        const ladoHorizontal = personCenterX - bolinhaCenterX;
+        const ladoVertical = personCenterY - bolinhaCenterY;
+
+        const hipotenusa = Math.sqrt((ladoHorizontal ** 2) + (ladoVertical ** 2));
+
+        const bolinhaVelBase = this.bolinha.getSpeedBase();
+
+        // Se a distância entre os centros for menor que a soma dos raios (Person vs Bolinha)
+        if (hipotenusa <= personRadius + bolinhaRadius) {
+            // Desfaz o movimento do personagem no tick atual
+            this.person.setPosX(this.person.getPosX() - this.person.getSpeedX());
+            this.person.setPosY(this.person.getPosY() - this.person.getSpeedY());
+
+            const seno = ladoVertical / hipotenusa;
+            const cosseno = ladoHorizontal / hipotenusa;
+
+            // Recalcula as velocidades da bolinha (mantendo o fixed-point 8.8 com Math.round)
+            this.bolinha.setSpeedX(Math.round(-bolinhaVelBase * cosseno));
+            this.bolinha.setSpeedY(Math.round(-bolinhaVelBase * seno));
+        }
+
+        // --- COLISÃO DA BOLINHA COM O INIMIGO ---
+        const inimigoRadius = this.inimigo.getWidth() >> 1;
+        const inimigoCenterX = this.inimigo.getPosX() + inimigoRadius;
+        const inimigoCenterY = this.inimigo.getPosY() + inimigoRadius;
+
+        const ladoHorizontalInimigo = inimigoCenterX - bolinhaCenterX;
+        const ladoVerticalInimigo = inimigoCenterY - bolinhaCenterY;
+
+        const hipotenusaInimigo = Math.sqrt((ladoHorizontalInimigo ** 2) + (ladoVerticalInimigo ** 2));
+
+        // Se a distância entre os centros for menor que a soma dos raios (Inimigo vs Bolinha)
+        if (hipotenusaInimigo <= inimigoRadius + bolinhaRadius) {
+            // Desfaz o movimento do inimigo no tick atual
+            this.inimigo.setPosX(this.inimigo.getPosX() - this.inimigo.getSpeedX());
+            this.inimigo.setPosY(this.inimigo.getPosY() - this.inimigo.getSpeedY());
+
+            const senoInimigo = ladoVerticalInimigo / hipotenusaInimigo;
+            const cossenoInimigo = ladoHorizontalInimigo / hipotenusaInimigo;
+
+            // Recalcula as velocidades da bolinha
+            this.bolinha.setSpeedX(Math.round(-bolinhaVelBase * cossenoInimigo));
+            this.bolinha.setSpeedY(Math.round(-bolinhaVelBase * senoInimigo));
+        }
     }
 }

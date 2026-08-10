@@ -1,1 +1,1 @@
-Implementar completamente o jogo
+Começar a implementar a versão em ZIG

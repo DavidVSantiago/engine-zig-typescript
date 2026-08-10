@@ -30,9 +30,9 @@ export class SimpleScene {
         }
     }
 
-    public render(ctx: CanvasRenderingContext2D): void {
+    public render(ctx: CanvasRenderingContext2D, alpha: number): void {
         for (let i = 0; i < this.layerList.length; i++) {
-            this.layerList[i].render(ctx);
+            this.layerList[i].render(ctx, alpha);
         }
     }
 }

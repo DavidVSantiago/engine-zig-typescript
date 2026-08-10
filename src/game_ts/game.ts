@@ -13,18 +13,10 @@ async function startGame() {
 
     engine.init(); // obrigatório chamar antes de usar engine
 
-    engine.setLoadingScene({
-        init: () => loadingScene.init(),
-        update: () => loadingScene.update(),
-        render: (ctx) => loadingScene.render(ctx),
-    });
+    engine.setLoadingScene({ type: 'Loading', scene: loadingScene });
 
-    // define a cena inicial(passando os ponteiros para as funções)
-    engine.setScene({
-        init: () => gameScene.init(),
-        update: () => gameScene.update(),
-        render: (ctx) => gameScene.render(ctx),
-    });
+    // define a cena inicial
+    engine.setScene({ type: 'Game', scene: gameScene });
 
     // inicia engine
     engine.startGame();

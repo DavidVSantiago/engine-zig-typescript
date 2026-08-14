@@ -1,17 +1,14 @@
-import { SimpleScene } from "../../engine_ts/scenes/simple_scene";
-import { SimpleSceneLayer } from "../../engine_ts/scenes/simple_scene_layer";
 import { MultiSprite } from "../../engine_ts/sprites/multi_sprite";
 import { SingleSprite } from "../../engine_ts/sprites/single_sprite";
 import { AssetManager } from "../../engine_ts/utils/asset_manager";
 import { InputManager as IM } from "../../engine_ts/utils/input_manager";
-import { SpriteUnion } from "../../engine_ts/sprites/sprite_union";
-import { engine } from "../../engine_ts/engine";
-import { timer } from "../../engine_ts/utils/timer";
+import { ISceneLayer } from "../../engine_ts/scenes/scene_layers/i_scene_layer";
+import { SimpleSceneLayer } from "../../engine_ts/scenes/scene_layers/simple_scene_layer";
+import { ISprite } from "../../engine_ts/sprites/i_sprite";
+import { BaseScene } from "../../engine_ts/scenes/base_scene";
 
 export class GameScene {
-    public readonly type = 'Game';
-
-    public base!: SimpleScene;
+    public base!: BaseScene;
 
     public fundo!: SingleSprite;
     public faixa_E!: SingleSprite;
@@ -59,56 +56,22 @@ export class GameScene {
         this.bolinha.setPosX((320 << 8) - (this.bolinha.getWidth() >> 1));
         this.bolinha.setPosY((240 << 8) - (this.bolinha.getWidth() >> 1));
 
-        // cria as tags da união dos sprites
-        const uFundo: SpriteUnion = { type: 'Single', sprite: this.fundo };
-        const uFaixa_E: SpriteUnion = { type: 'Single', sprite: this.faixa_E };
-        const uFaixa_D: SpriteUnion = { type: 'Single', sprite: this.faixa_D };
-        
-        const uPerson: SpriteUnion = { type: 'Multi', sprite: this.person };
-        const uInimigo: SpriteUnion = { type: 'Multi', sprite: this.inimigo };
-        const uBolinha: SpriteUnion = { type: 'Multi', sprite: this.bolinha };
+        // cria os layers
+        const iBackLayer: ISceneLayer = new SimpleSceneLayer(0, 0, [this.fundo, this.faixa_E, this.faixa_D]);
+        const iGameLayer: ISceneLayer = new SimpleSceneLayer(0, 0, [this.person, this.inimigo, this.bolinha]);
 
         // cria os layers da cena
-        const layerList: SimpleSceneLayer[] = [
-            new SimpleSceneLayer(0, 0, [uFundo, uFaixa_E, uFaixa_D]),
-            new SimpleSceneLayer(0, 0, [uPerson, uInimigo, uBolinha])
+        const layerList: ISceneLayer[] = [
+            iBackLayer,
+            iGameLayer
         ];
 
         // adiciona os layers na cena
-        this.base = new SimpleScene(layerList);
+        this.base = new BaseScene(layerList);
     }
 
     /**********************************************************/
     /** MÉTODOS GAMELOOP*/
-    /**********************************************************/
-
-    public update(): void {
-        this.handleInput();
-
-        this.base.moveX();
-        this.checkCollisionsX();
-        this.base.moveY();
-        this.checkCollisionsY();
-
-        // Colisões entre entidades (radiais, que dependem de X e Y simultaneamente)
-        this.checkCollisionsEntities();
-
-        // if (!this.agendou) {
-        //     this.agendou = true;
-        //     timer.start(120, () => {
-        //         const nextScene = new GameScene();
-        //         engine.changeScene(nextScene, 60);
-        //     });
-        // }
-    }
-
-    public render(ctx: CanvasRenderingContext2D, alpha: number): void {
-        this.base.render(ctx, alpha);
-
-    }
-
-    /**********************************************************/
-    /** OUTROS MÉTODOS */
     /**********************************************************/
 
     public handleInput(): void {
@@ -146,6 +109,34 @@ export class GameScene {
             this.person.currentFrame = 3; // direita
         }
     }
+
+    public update(): void {
+
+        this.base.moveX();
+        this.checkCollisionsX();
+        this.base.moveY();
+        this.checkCollisionsY();
+
+        // Colisões entre entidades (radiais, que dependem de X e Y simultaneamente)
+        this.checkCollisionsEntities();
+
+        // if (!this.agendou) {
+        //     this.agendou = true;
+        //     timer.start(120, () => {
+        //         const nextScene = new GameScene();
+        //         engine.changeScene(nextScene, 60);
+        //     });
+        // }
+    }
+
+    public render(ctx: CanvasRenderingContext2D, alpha: number): void {
+        this.base.render(ctx, alpha);
+
+    }
+
+    /**********************************************************/
+    /** OUTROS MÉTODOS */
+    /**********************************************************/
 
     public checkCollisionsX(): void {
         // colisão do jogador com o lado direito da tela

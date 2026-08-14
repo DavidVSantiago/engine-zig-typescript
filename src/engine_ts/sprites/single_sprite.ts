@@ -1,4 +1,4 @@
-import { Frame } from "./frame";
+import { Frame } from "./data/frame";
 import { Sprite } from "./sprite";
 
 /** Representa um sprite único sem caixas de colisões*/
@@ -57,12 +57,10 @@ export class SingleSprite {
     /**********************************************************/
 
     public moveX(): void {
-        this.base.prevPosX = this.base.posX;
-        this.base.posX += this.base.speedX;
+        this.base.moveX();
     }
     public moveY(): void {
-        this.base.prevPosY = this.base.posY;
-        this.base.posY += this.base.speedY;
+        this.base.moveY();
     }
 
     /**********************************************************/

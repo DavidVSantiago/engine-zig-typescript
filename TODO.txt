@@ -1,1 +1,3 @@
-Começar a implementar a versão em ZIG
+- Analisar a implemetação do método render em single_sprite.zig e multi_sprite.zig. Isso vai requerer compreender como o  Raylib será incorporado
+
+- Analisar a questão das taggedUnions (para substituir o ISprite), já está no ponto no antigravity

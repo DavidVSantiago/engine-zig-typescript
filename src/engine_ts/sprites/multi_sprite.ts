@@ -1,5 +1,5 @@
-import { Frame } from "./frame";
-import { CollisionBox } from "./collision_box";
+import { Frame } from "./data/frame";
+import { CollisionBox } from "./data/collision_box";
 import { Sprite } from "./sprite";
 
 /** Representa um sprite estático com caixas de colisões(1 ou mais frames controlados manualmente) */
@@ -60,12 +60,10 @@ export class MultiSprite {
     /**********************************************************/
 
     public moveX(): void {
-        this.base.prevPosX = this.base.posX;
-        this.base.posX += this.base.speedX;
+        this.base.moveX();
     }
     public moveY(): void {
-        this.base.prevPosY = this.base.posY;
-        this.base.posY += this.base.speedY;
+        this.base.moveY();
     }
 
     public getCollisionBoxList(): CollisionBox[] {

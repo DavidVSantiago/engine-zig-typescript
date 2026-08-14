@@ -1,5 +1,3 @@
-import { Frame } from "./frame";
-
 /** Representa um sprite único sem caixas de colisões*/
 export class Sprite {
     public image: HTMLImageElement; // representa o spritesheet
@@ -34,5 +32,19 @@ export class Sprite {
         this.drawWidth = drawWidth << 8; // escala para fixed-point 8.8
         this.drawHeigth = drawHeigth << 8; // escala para fixed-point 8.8
         this.speedBase = 256;
+    }
+
+    /**********************************************************/
+    /** MÉTODOS */
+    /**********************************************************/
+
+    public moveX(): void {
+        this.prevPosX = this.posX;
+        this.posX += this.speedX;
+    }
+
+    public moveY(): void {
+        this.prevPosY = this.posY;
+        this.posY += this.speedY;
     }
 }

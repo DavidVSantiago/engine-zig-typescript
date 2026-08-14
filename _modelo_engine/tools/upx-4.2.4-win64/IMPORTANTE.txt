@@ -1,2 +1,0 @@
-strip --strip-all game.exe
-upx --best game.exe

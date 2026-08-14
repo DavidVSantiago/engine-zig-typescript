@@ -1,14 +1,16 @@
 import { MultiSprite } from "../sprites/multi_sprite";
 import { SingleSprite } from "../sprites/single_sprite";
 import { FileIO } from "./file_io";
-import { Frame } from "../sprites/frame";
-import { CollisionBox } from "../sprites/collision_box";
+import { Frame } from "../sprites/data/frame";
+import { CollisionBox } from "../sprites/data/collision_box";
 
 export class AssetManager {
 
+    /** Retorna uma lista de SingleSprite prontos */
     public static async loadSingleSprites(spritePathList: string[]): Promise<SingleSprite[]> {
         // Carrega todos os arquivos de definição dos sprites
         const jsonList = await FileIO.loadSpriteFiles(spritePathList);
+
 
         /** Valida a integridade dos arquivos .spr  */
         for (let i = 0; i < jsonList.length; i++) {
@@ -49,6 +51,7 @@ export class AssetManager {
         return spriteList;
     }
 
+    /** Retorna uma lista de MultiSprite prontos */
     public static async loadMultiSprites(spritePathList: string[]): Promise<MultiSprite[]> {
         // Carrega todos os arquivos de definição dos sprites
         const jsonList = await FileIO.loadSpriteFiles(spritePathList);

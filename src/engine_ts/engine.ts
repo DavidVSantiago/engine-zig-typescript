@@ -1,4 +1,4 @@
-import { SceneUnion } from "./scenes/scene_union";
+import { IScene } from "./scenes/i_scene";
 import { InputManager } from "./utils/input_manager";
 import { timer } from "./utils/timer";
 
@@ -17,9 +17,8 @@ class Engine {
 
     public previousTime!: number;
     public accumulator!: number;
-    public currentScene!: SceneUnion;
-
-    public loadingScene!: SceneUnion;
+    public currentScene!: IScene;
+    public loadingScene!: IScene;
 
     /**********************************************************/
     /** FUNÇÕES DE INICIALIZAÇÃO */
@@ -89,11 +88,11 @@ class Engine {
     /** FUNÇÕES */
     /**********************************************************/
 
-    public setScene(scene: SceneUnion) {
+    public setScene(scene: IScene) {
         this.currentScene = scene;
     }
 
-    public setLoadingScene(scene: SceneUnion) {
+    public setLoadingScene(scene: IScene) {
         this.loadingScene = scene;
     }
 
@@ -102,19 +101,15 @@ class Engine {
         requestAnimationFrame((timestamp) => this.gameLoop(timestamp));
     }
 
-    // engine_ts/engine.ts
-
-    public async changeScene(nextScene: SceneUnion, minTicks: number = 60) {
+    public async changeScene(nextScene: IScene, minTicks: number = 60) {
         this.currentScene = this.loadingScene; // seta cena atual para o loading
 
         // Converte o minTicks para milissegundos
         const minTime = minTicks * this.MS_PER_TICK;
         const startTime = performance.now(); // tempo inicial do carregamento
-        
-        switch(nextScene.type) {
-            case 'Game': await nextScene.scene.init(); break;
-            case 'Loading': await nextScene.scene.init(); break;
-        }
+
+        await nextScene.init();
+
         const elapsedTime = performance.now() - startTime; // tempo que levou para carregar os recursos
 
         // se o tempo para carregar os recursos foi menor, espera a diferença
@@ -140,10 +135,8 @@ class Engine {
         this.accumulator += elapsed;
         while (this.accumulator >= (this.MS_PER_TICK)) {
             if (this.currentScene) {
-                switch (this.currentScene.type) {
-                    case 'Game': this.currentScene.scene.update(); break;
-                    case 'Loading': this.currentScene.scene.update(); break;
-                }
+                this.currentScene.handleInput();
+                this.currentScene.update();
             }
             timer.tick(); // atualiza o relógio do timer (fixed timestep)
             this.accumulator -= this.MS_PER_TICK;
@@ -152,10 +145,7 @@ class Engine {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         if (this.currentScene) {
             const alpha = this.accumulator / this.MS_PER_TICK;
-            switch (this.currentScene.type) {
-                case 'Game': this.currentScene.scene.render(this.ctx, alpha); break;
-                case 'Loading': this.currentScene.scene.render(this.ctx, alpha); break;
-            }
+            this.currentScene.render(this.ctx, alpha);
         }
 
         requestAnimationFrame((timestamp) => this.gameLoop(timestamp));

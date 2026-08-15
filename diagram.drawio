@@ -1,6 +1,6 @@
 <mxfile host="65bd71144e">
     <diagram id="6Fgl5FVzZwteWgxbQnfu" name="Page-1">
-        <mxGraphModel dx="487" dy="1454" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+        <mxGraphModel dx="1359" dy="1728" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
@@ -55,7 +55,7 @@
                 <mxCell id="89" value="Sprite" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#bac8d3;strokeColor=#23445d;" parent="1" vertex="1">
                     <mxGeometry x="1420" y="150" width="170" height="260" as="geometry"/>
                 </mxCell>
-                <mxCell id="92" value="+ image: HTMLImageElement&#10;+ posX: number&#10;+ posY: number&#10;+ prevPosX: number&#10;+ prevPosY: number&#10;+ speedX: number&#10;+ speedY: number&#10;+ speedBase: number&#10;+ width: number&#10;+ heigth: number&#10;+ drawWidth: number&#10;+ drawHeigth: number&#10;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="89" vertex="1">
+                <mxCell id="92" value="+ textureID: number&#10;+ posX: number&#10;+ posY: number&#10;+ prevPosX: number&#10;+ prevPosY: number&#10;+ speedX: number&#10;+ speedY: number&#10;+ speedBase: number&#10;+ width: number&#10;+ heigth: number&#10;+ drawWidth: number&#10;+ drawHeigth: number&#10;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="89" vertex="1">
                     <mxGeometry y="26" width="170" height="174" as="geometry"/>
                 </mxCell>
                 <mxCell id="91" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" parent="89" vertex="1">
@@ -344,6 +344,24 @@
                     <mxGeometry width="160" relative="1" as="geometry">
                         <mxPoint x="570" y="-255" as="sourcePoint"/>
                         <mxPoint x="840" y="-280" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="208" value="AssetManager" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#d0cee2;strokeColor=#56517e;" parent="1" vertex="1">
+                    <mxGeometry x="1680" y="280" width="380" height="140" as="geometry"/>
+                </mxCell>
+                <mxCell id="209" value="- {static} textureRegistry: Map&lt;number, HTMLImageElement&gt;&#10;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="208" vertex="1">
+                    <mxGeometry y="26" width="380" height="24" as="geometry"/>
+                </mxCell>
+                <mxCell id="210" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" parent="208" vertex="1">
+                    <mxGeometry y="50" width="380" height="8" as="geometry"/>
+                </mxCell>
+                <mxCell id="211" value="+ getTexture(id: number): HTMLImageElement | undefined&#10;+ loadSingleSprites(spritePathList: string[]): Promise&lt;SingleSprite[]&gt;&#10;+ loadMultiSprites(spritePathList: string[]): Promise&lt;MultiSprite[]&gt;&#10;- checkSpriteFile(json: any, expectedType: string): boolean&#10;- hashString(str: string): number&#10;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="208" vertex="1">
+                    <mxGeometry y="58" width="380" height="82" as="geometry"/>
+                </mxCell>
+                <mxCell id="214" value="usa getTexture(), em render(), para obter a textura." style="endArrow=open;endSize=12;dashed=1;html=1;exitX=0;exitY=0;exitDx=350;exitDy=82.5;entryX=0.493;entryY=0.998;entryDx=0;entryDy=0;edgeStyle=orthogonalEdgeStyle;exitPerimeter=0;entryPerimeter=0;" edge="1" parent="1" source="59" target="211">
+                    <mxGeometry width="160" relative="1" as="geometry">
+                        <mxPoint x="1610" y="279.16999999999996" as="sourcePoint"/>
+                        <mxPoint x="1770" y="279.16999999999996" as="targetPoint"/>
                     </mxGeometry>
                 </mxCell>
             </root>

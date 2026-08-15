@@ -1,5 +1,6 @@
 import { Frame } from "./data/frame";
 import { Sprite } from "./sprite";
+import { AssetManager } from "../utils/asset_manager";
 
 /** Representa um sprite único sem caixas de colisões*/
 export class SingleSprite {
@@ -7,7 +8,7 @@ export class SingleSprite {
     public frame: Frame; // representa o frame unico de SingleSprite
 
     constructor(
-        image: HTMLImageElement,
+        textureId: number,
         posX: number = 0, posY: number = 0,
         speedX: number = 0, speedY: number = 0,
         width: number = 0, heigth: number = 0,
@@ -16,7 +17,7 @@ export class SingleSprite {
 
         // inicializa a base com os atributos genéricos
         this.base = new Sprite(
-            image, posX, posY,
+            textureId, posX, posY,
             speedX, speedY,
             width, heigth,
             drawWidth, drawHeigth
@@ -81,8 +82,12 @@ export class SingleSprite {
         const drawY = (interpY >> 8);
         const drawW = (this.base.drawWidth >> 8);
         const drawH = (this.base.drawHeigth >> 8);
+        
+        const img = AssetManager.getTexture(this.base.textureId);
+        if (!img) return; // Previne crash se a imagem não estiver carregada
+
         ctx.drawImage(
-            this.base.image as CanvasImageSource,
+            img as CanvasImageSource,
             cutX, cutY, cutW, cutH,
             drawX, drawY, drawW, drawH
         );

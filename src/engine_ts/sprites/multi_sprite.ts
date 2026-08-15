@@ -1,6 +1,7 @@
 import { Frame } from "./data/frame";
 import { CollisionBox } from "./data/collision_box";
 import { Sprite } from "./sprite";
+import { AssetManager } from "../utils/asset_manager";
 
 /** Representa um sprite estático com caixas de colisões(1 ou mais frames controlados manualmente) */
 export class MultiSprite {
@@ -9,7 +10,7 @@ export class MultiSprite {
     public currentFrame: number; // Índice do frame ativo no momento
 
     constructor(
-        image: HTMLImageElement,
+        textureId: number,
         posX: number = 0, posY: number = 0,
         speedX: number = 0, speedY: number = 0,
         width: number = 0, heigth: number = 0,
@@ -18,7 +19,7 @@ export class MultiSprite {
 
         // inicializa a base com os atributos genéricos
         this.base = new Sprite(
-            image, posX, posY,
+            textureId, posX, posY,
             speedX, speedY,
             width, heigth,
             drawWidth, drawHeigth
@@ -90,8 +91,12 @@ export class MultiSprite {
         const drawY = (interpY >> 8);
         const drawW = (this.base.drawWidth >> 8);
         const drawH = (this.base.drawHeigth >> 8);
+        
+        const img = AssetManager.getTexture(this.base.textureId);
+        if (!img) return; // Previne crash se a imagem não estiver carregada
+
         ctx.drawImage(
-            this.base.image as CanvasImageSource,
+            img as CanvasImageSource,
             cutX, cutY, cutW, cutH,
             drawX, drawY, drawW, drawH
         );

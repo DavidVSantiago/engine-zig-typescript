@@ -6,6 +6,22 @@ import { CollisionBox } from "../sprites/data/collision_box";
 
 export class AssetManager {
 
+    /**********************************************************/
+    /** ASSETS CARREGADOS */
+    /**********************************************************/
+
+    private static textureRegistry = new Map<number, HTMLImageElement>();
+
+
+    /**********************************************************/
+    /** FUNÇÕES DE CARREGAMENTO */
+    /**********************************************************/
+
+    /// obtém a textura pelo id (hash da string)
+    public static getTexture(id: number): HTMLImageElement | undefined {
+        return this.textureRegistry.get(id);
+    }
+
     /** Retorna uma lista de SingleSprite prontos */
     public static async loadSingleSprites(spritePathList: string[]): Promise<SingleSprite[]> {
         // Carrega todos os arquivos de definição dos sprites
@@ -45,7 +61,11 @@ export class AssetManager {
                 null
             );
 
-            const singleSprite = new SingleSprite(img, json.posX, json.posY, json.speedX, json.speedY, json.width, json.height || json.heigth, json.drawWidth, json.drawHeight || json.drawHeigth, frame);
+            // Gera o ID único e salva a imagem no registro global
+            const textureId = this.hashString(json.imagePath);
+            this.textureRegistry.set(textureId, img);
+
+            const singleSprite = new SingleSprite(textureId, json.posX, json.posY, json.speedX, json.speedY, json.width, json.height, json.drawWidth, json.drawHeight, frame);
             spriteList.push(singleSprite);
         }
         return spriteList;
@@ -110,7 +130,11 @@ export class AssetManager {
                 frameList.push(frame);
             }
 
-            const multiSprite = new MultiSprite(img, json.posX, json.posY, json.speedX, json.speedY, json.width, json.height || json.heigth, json.drawWidth, json.drawHeight || json.drawHeigth, frameList);
+            // Gera o ID único e salva a imagem no registro global
+            const textureId = this.hashString(json.imagePath);
+            this.textureRegistry.set(textureId, img);
+
+            const multiSprite = new MultiSprite(textureId, json.posX, json.posY, json.speedX, json.speedY, json.width, json.height, json.drawWidth, json.drawHeight, frameList);
             spriteList.push(multiSprite);
         }
         return spriteList;
@@ -149,5 +173,14 @@ export class AssetManager {
         } else return false; // o campo type tem um valor inválido
 
         return true;
+    }
+    /// gera um hash para uma string
+    private static hashString(str: string): number {
+        let hash = 2166136261; // FNV offset basis
+        for (let i = 0; i < str.length; i++) {
+            hash ^= str.charCodeAt(i);
+            hash = Math.imul(hash, 16777619); // FNV prime
+        }
+        return hash >>> 0; // garante inteiro unsigned de 32 bits
     }
 }

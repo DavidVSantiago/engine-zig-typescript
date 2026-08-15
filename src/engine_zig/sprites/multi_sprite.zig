@@ -2,6 +2,7 @@ const std = @import("std");
 const CollisionBox = @import("data/collision_box.zig").CollisionBox;
 const Frame = @import("data/frame.zig").Frame;
 const Sprite = @import("sprite.zig").Sprite;
+const AssetManager = @import("../utils/asset_manager.zig").AssetManager;
 
 /// Sprite estático com múltiplos quadros
 pub const MultiSprite = struct {
@@ -11,7 +12,7 @@ pub const MultiSprite = struct {
 
     /// construtor
     pub inline fn init(
-        image: ?*const anyopaque,
+        texture_id: u32,
         pos_x: i32,
         pos_y: i32,
         speed_x: i32,
@@ -23,7 +24,7 @@ pub const MultiSprite = struct {
         frame_list: []const Frame,
     ) MultiSprite {
         return .{
-            .base = Sprite.init(image, pos_x, pos_y, speed_x, speed_y, width, height, draw_width, draw_height),
+            .base = Sprite.init(texture_id, pos_x, pos_y, speed_x, speed_y, width, height, draw_width, draw_height),
             .frame_list = frame_list,
             .current_frame = 0,
         };
@@ -109,6 +110,57 @@ pub const MultiSprite = struct {
     pub inline fn moveY(self: *MultiSprite) void {
         self.base.moveY();
     }
+
+    // ========================================================================
+    // MÉTODOS GAMELOOP
+    // ========================================================================
+
+    pub inline fn render(self: MultiSprite, alpha: f32) void {
+        const rl = @import("raylib");
+
+        // 1. Busca a textura carregada na VRAM usando o ID do AssetManager
+        const texture = AssetManager.getTexture(self.base.texture_id) orelse return;
+
+        // 2. Converte o alpha para fixed-point 8.8
+        const alpha_fixed: i32 = @intFromFloat(alpha * 256.0);
+
+        // 3. Interpolação puramente inteira no domínio dos sub-pixels
+        const delta_x = self.base.pos_x - self.base.prev_pos_x;
+        const interp_x_sub = self.base.prev_pos_x + @divTrunc(delta_x * alpha_fixed, 256);
+
+        const delta_y = self.base.pos_y - self.base.prev_pos_y;
+        const interp_y_sub = self.base.prev_pos_y + @divTrunc(delta_y * alpha_fixed, 256);
+
+        // 4. Converte dimensões estáticas para pixels
+        const cut_x: f32 = @floatFromInt(self.frame_list[self.current_frame].cut_x >> 8);
+        const cut_y: f32 = @floatFromInt(self.frame_list[self.current_frame].cut_y >> 8);
+        const cut_w: f32 = @floatFromInt(self.base.width >> 8);
+        const cut_h: f32 = @floatFromInt(self.base.height >> 8);
+
+        const draw_w: f32 = @floatFromInt(self.base.draw_width >> 8);
+        const draw_h: f32 = @floatFromInt(self.base.draw_height >> 8);
+
+        // 5. Monta as structs do Raylib
+        const source_rec = rl.Rectangle{
+            .x = cut_x,
+            .y = cut_y,
+            .width = cut_w,
+            .height = cut_h,
+        };
+
+        const dest_rec = rl.Rectangle{
+            // O "pulo do gato": divisão final por float para manter suavização subpixel na GPU
+            .x = @as(f32, @floatFromInt(interp_x_sub)) / 256.0,
+            .y = @as(f32, @floatFromInt(interp_y_sub)) / 256.0,
+            .width = draw_w,
+            .height = draw_h,
+        };
+
+        const origin = rl.Vector2{ .x = 0.0, .y = 0.0 };
+
+        // 6. Desenha na tela via GPU
+        rl.DrawTexturePro(texture, source_rec, dest_rec, origin, 0.0, rl.WHITE);
+    }
 };
 
 // ============================================================================
@@ -125,7 +177,7 @@ test "MultiSprite.init getters/setters e metodos" {
         Frame.init(64, 0, &.{}),
     };
 
-    var multi = MultiSprite.init(null, 10, 20, 1, 2, 32, 32, 64, 64, &frames);
+    var multi = MultiSprite.init(42, 10, 20, 1, 2, 32, 32, 64, 64, &frames);
 
     // Valida getters
     try std.testing.expectEqual(@as(i32, 10 << 8), multi.getPosX());

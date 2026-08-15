@@ -2,7 +2,7 @@ const std = @import("std");
 
 /// Estrutura base contendo os atributos genéricos de todos os tipos de sprites em ponto-fixo (8.8)
 pub const Sprite = struct {
-    image: ?*const anyopaque = null, // ponteiro para a textura do sprite
+    texture_id: u32 = 0, // ID (hash) que representa a textura no AssetManager
     pos_x: i32,
     pos_y: i32,
     prev_pos_x: i32,
@@ -17,7 +17,7 @@ pub const Sprite = struct {
 
     /// construtor de Sprite
     pub inline fn init(
-        image: ?*const anyopaque,
+        texture_id: u32,
         pos_x: i32,
         pos_y: i32,
         speed_x: i32,
@@ -31,7 +31,7 @@ pub const Sprite = struct {
         const py = pos_y << 8;
 
         return .{
-            .image = image,
+            .texture_id = texture_id,
             .pos_x = px,
             .pos_y = py,
             .prev_pos_x = px,
@@ -82,7 +82,7 @@ test "Sprite layout e tamanho em memoria" {
 }
 
 test "Sprite.moveX e Sprite.moveY" {
-    var sprite = Sprite.init(null, 10, 20, 5, -2, 16, 16, 16, 16);
+    var sprite = Sprite.init(42, 10, 20, 5, -2, 16, 16, 16, 16);
 
     sprite.moveX();
     try std.testing.expectEqual(@as(i32, 10 << 8), sprite.prev_pos_x);

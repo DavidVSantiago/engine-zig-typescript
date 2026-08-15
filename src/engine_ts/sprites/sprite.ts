@@ -1,6 +1,6 @@
 /** Representa um sprite único sem caixas de colisões*/
 export class Sprite {
-    public image: HTMLImageElement; // representa o spritesheet
+    public textureId: number; // ID numérico (hash) que representa o spritesheet no AssetManager
     public posX: number; // posição X em sub-pixels
     public posY: number; // posição Y em sub-pixels
     public prevPosX: number; // posição X no tick anterior
@@ -14,13 +14,13 @@ export class Sprite {
     public drawHeigth: number; // altura em pixels em que o sprite será desenhado na tela
 
     constructor(
-        image: HTMLImageElement,
+        textureId: number,
         posX: number = 0, posY: number = 0,
         speedX: number = 0, speedY: number = 0,
         width: number = 0, heigth: number = 0,
         drawWidth: number = 0, drawHeigth: number = 0
     ) {
-        this.image = image;
+        this.textureId = textureId;
         this.posX = posX << 8; // escala para fixed-point 8.8
         this.posY = posY << 8; // escala para fixed-point 8.8
         this.prevPosX = this.posX; // inicializa igual a posição atual

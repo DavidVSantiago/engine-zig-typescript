@@ -1,4 +1,3 @@
-// engine_ts/memory.ts
 export class FileIO {
 
     /** Recebe uma lista de caminhos de sprites (.spr) e retorna uma lista (promise) dos objetos carregados */

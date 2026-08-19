@@ -1,0 +1,33 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug Zig Tests (Parar no Breakpoint)",
+            "type": "lldb",
+            "request": "launch",
+            "program": "${workspaceFolder}/zig-out/bin/test.exe",
+            "args": [],
+            "cwd": "${workspaceFolder}",
+            "stopOnEntry": false,
+            "expressions": "simple",
+            "initCommands": [
+                "settings set target.language c++"
+            ],
+            "preLaunchTask": "Zig: Build Test (Debug)"
+        },
+        {
+            "name": "Debug Zig Tests (Escolher Teste por Filtro)",
+            "type": "lldb",
+            "request": "launch",
+            "program": "${workspaceFolder}/zig-out/bin/test.exe",
+            "args": [],
+            "cwd": "${workspaceFolder}",
+            "stopOnEntry": false,
+            "expressions": "simple",
+            "initCommands": [
+                "settings set target.language c++"
+            ],
+            "preLaunchTask": "Zig: Build Test (Filtered)"
+        }
+    ]
+}

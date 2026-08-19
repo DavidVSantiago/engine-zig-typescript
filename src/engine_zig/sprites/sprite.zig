@@ -64,21 +64,21 @@ pub const Sprite = struct {
 // ============================================================================
 
 test "Sprite layout e tamanho em memoria" {
-    try std.testing.expectEqual(@as(usize, 56), @sizeOf(Sprite));
-    try std.testing.expectEqual(@as(usize, 8), @alignOf(Sprite));
+    try std.testing.expectEqual(@as(usize, 48), @sizeOf(Sprite));
+    try std.testing.expectEqual(@as(usize, 4), @alignOf(Sprite));
 
-    try std.testing.expectEqual(@as(usize, 0), @offsetOf(Sprite, "image"));
-    try std.testing.expectEqual(@as(usize, 8), @offsetOf(Sprite, "pos_x"));
-    try std.testing.expectEqual(@as(usize, 12), @offsetOf(Sprite, "pos_y"));
-    try std.testing.expectEqual(@as(usize, 16), @offsetOf(Sprite, "prev_pos_x"));
-    try std.testing.expectEqual(@as(usize, 20), @offsetOf(Sprite, "prev_pos_y"));
-    try std.testing.expectEqual(@as(usize, 24), @offsetOf(Sprite, "speed_x"));
-    try std.testing.expectEqual(@as(usize, 28), @offsetOf(Sprite, "speed_y"));
-    try std.testing.expectEqual(@as(usize, 32), @offsetOf(Sprite, "speed_base"));
-    try std.testing.expectEqual(@as(usize, 36), @offsetOf(Sprite, "width"));
-    try std.testing.expectEqual(@as(usize, 40), @offsetOf(Sprite, "height"));
-    try std.testing.expectEqual(@as(usize, 44), @offsetOf(Sprite, "draw_width"));
-    try std.testing.expectEqual(@as(usize, 48), @offsetOf(Sprite, "draw_height"));
+    try std.testing.expectEqual(@as(usize, 0), @offsetOf(Sprite, "texture_id"));
+    try std.testing.expectEqual(@as(usize, 4), @offsetOf(Sprite, "pos_x"));
+    try std.testing.expectEqual(@as(usize, 8), @offsetOf(Sprite, "pos_y"));
+    try std.testing.expectEqual(@as(usize, 12), @offsetOf(Sprite, "prev_pos_x"));
+    try std.testing.expectEqual(@as(usize, 16), @offsetOf(Sprite, "prev_pos_y"));
+    try std.testing.expectEqual(@as(usize, 20), @offsetOf(Sprite, "speed_x"));
+    try std.testing.expectEqual(@as(usize, 24), @offsetOf(Sprite, "speed_y"));
+    try std.testing.expectEqual(@as(usize, 28), @offsetOf(Sprite, "speed_base"));
+    try std.testing.expectEqual(@as(usize, 32), @offsetOf(Sprite, "width"));
+    try std.testing.expectEqual(@as(usize, 36), @offsetOf(Sprite, "height"));
+    try std.testing.expectEqual(@as(usize, 40), @offsetOf(Sprite, "draw_width"));
+    try std.testing.expectEqual(@as(usize, 44), @offsetOf(Sprite, "draw_height"));
 }
 
 test "Sprite.moveX e Sprite.moveY" {

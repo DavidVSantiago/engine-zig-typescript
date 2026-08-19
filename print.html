@@ -1,0 +1,225 @@
+<div style="max-width:100%;overflow:auto">
+    <p style="font-family:inherit;margin:0 0 0.25em"><strong>asset_manager.zig</strong></p>
+    <pre style="white-space:pre-wrap;word-wrap:break-word;background-color:#1E1E1E;color:#D4D4D4"><code><span><span style="color:#569CD6">const</span><span style="color:#D4D4D4"> std = @import(</span><span style="color:#CE9178">"std"</span><span style="color:#D4D4D4">);</span></span>
+<span><span style="color:#569CD6">const</span><span style="color:#D4D4D4"> rl = @import(</span><span style="color:#CE9178">"raylib"</span><span style="color:#D4D4D4">);</span></span>
+<span><span style="color:#569CD6">const</span><span style="color:#D4D4D4"> file_io = @import(</span><span style="color:#CE9178">"file_io.zig"</span><span style="color:#D4D4D4">);</span></span>
+<span><span style="color:#569CD6">const</span><span style="color:#D4D4D4"> FileIO = file_io.FileIO;</span></span>
+<span></span>
+<span><span style="color:#569CD6">const</span><span style="color:#D4D4D4"> Frame = @import(</span><span style="color:#CE9178">"../sprites/data/frame.zig"</span><span style="color:#D4D4D4">).Frame;</span></span>
+<span><span style="color:#569CD6">const</span><span style="color:#D4D4D4"> CollisionBox = @import(</span><span style="color:#CE9178">"../sprites/data/collision_box.zig"</span><span style="color:#D4D4D4">).CollisionBox;</span></span>
+<span><span style="color:#569CD6">const</span><span style="color:#D4D4D4"> SingleSprite = @import(</span><span style="color:#CE9178">"../sprites/single_sprite.zig"</span><span style="color:#D4D4D4">).SingleSprite;</span></span>
+<span><span style="color:#569CD6">const</span><span style="color:#D4D4D4"> MultiSprite = @import(</span><span style="color:#CE9178">"../sprites/multi_sprite.zig"</span><span style="color:#D4D4D4">).MultiSprite;</span></span>
+<span></span>
+<span><span style="color:#6A9955">// ============================================================================</span></span>
+<span><span style="color:#6A9955">// ESTRUTURAS JSON</span></span>
+<span><span style="color:#6A9955">// ============================================================================</span></span>
+<span><span style="color:#6A9955">// O Parse do Zig exige structs estritas para mapear os dados do arquivo .spr</span></span>
+<span></span>
+<span><span style="color:#569CD6">const</span><span style="color:#D4D4D4"> JsonCollisionBox = </span><span style="color:#569CD6">struct</span><span style="color:#D4D4D4"> {</span></span>
+<span><span style="color:#D4D4D4">    offsetX: </span><span style="color:#569CD6">i32</span><span style="color:#D4D4D4">,</span></span>
+<span><span style="color:#D4D4D4">    offsetY: </span><span style="color:#569CD6">i32</span><span style="color:#D4D4D4">,</span></span>
+<span><span style="color:#D4D4D4">    w: </span><span style="color:#569CD6">i32</span><span style="color:#D4D4D4">,</span></span>
+<span><span style="color:#D4D4D4">    h: </span><span style="color:#569CD6">i32</span><span style="color:#D4D4D4">,</span></span>
+<span><span style="color:#D4D4D4">};</span></span>
+<span></span>
+<span><span style="color:#569CD6">const</span><span style="color:#D4D4D4"> JsonFrame = </span><span style="color:#569CD6">struct</span><span style="color:#D4D4D4"> {</span></span>
+<span><span style="color:#D4D4D4">    cutX: </span><span style="color:#569CD6">i32</span><span style="color:#D4D4D4">,</span></span>
+<span><span style="color:#D4D4D4">    cutY: </span><span style="color:#569CD6">i32</span><span style="color:#D4D4D4">,</span></span>
+<span><span style="color:#D4D4D4">    collisionBoxes: ?[]JsonCollisionBox = </span><span style="color:#569CD6">null</span><span style="color:#D4D4D4">,</span></span>
+<span><span style="color:#D4D4D4">};</span></span>
+<span></span>
+<span><span style="color:#569CD6">const</span><span style="color:#D4D4D4"> JsonSprite = </span><span style="color:#569CD6">struct</span><span style="color:#D4D4D4"> {</span></span>
+<span><span style="color:#569CD6">    type</span><span style="color:#D4D4D4">: []</span><span style="color:#569CD6">const</span><span style="color:#569CD6"> u8</span><span style="color:#D4D4D4">,</span></span>
+<span><span style="color:#D4D4D4">    imagePath: []</span><span style="color:#569CD6">const</span><span style="color:#569CD6"> u8</span><span style="color:#D4D4D4">,</span></span>
+<span><span style="color:#D4D4D4">    posX: </span><span style="color:#569CD6">i32</span><span style="color:#D4D4D4">,</span></span>
+<span><span style="color:#D4D4D4">    posY: </span><span style="color:#569CD6">i32</span><span style="color:#D4D4D4">,</span></span>
+<span><span style="color:#D4D4D4">    speedX: </span><span style="color:#569CD6">i32</span><span style="color:#D4D4D4">,</span></span>
+<span><span style="color:#D4D4D4">    speedY: </span><span style="color:#569CD6">i32</span><span style="color:#D4D4D4">,</span></span>
+<span><span style="color:#D4D4D4">    width: </span><span style="color:#569CD6">i32</span><span style="color:#D4D4D4">,</span></span>
+<span><span style="color:#D4D4D4">    height: </span><span style="color:#569CD6">i32</span><span style="color:#D4D4D4">,</span></span>
+<span><span style="color:#D4D4D4">    drawWidth: </span><span style="color:#569CD6">i32</span><span style="color:#D4D4D4">,</span></span>
+<span><span style="color:#D4D4D4">    drawHeight: </span><span style="color:#569CD6">i32</span><span style="color:#D4D4D4">,</span></span>
+<span><span style="color:#D4D4D4">    frames: []JsonFrame,</span></span>
+<span><span style="color:#D4D4D4">};</span></span>
+<span></span>
+<span><span style="color:#6A9955">// ============================================================================</span></span>
+<span><span style="color:#6A9955">// ASSET MANAGER</span></span>
+<span><span style="color:#6A9955">// ============================================================================</span></span>
+<span></span>
+<span><span style="color:#569CD6">pub</span><span style="color:#569CD6"> const</span><span style="color:#D4D4D4"> AssetManager = </span><span style="color:#569CD6">struct</span><span style="color:#D4D4D4"> {</span></span>
+<span><span style="color:#6A9955">    /// ASSETS CARREGADOS</span></span>
+<span><span style="color:#569CD6">    var</span><span style="color:#D4D4D4"> texture_registry: std.AutoHashMap(</span><span style="color:#569CD6">u32</span><span style="color:#D4D4D4">, rl.Texture2D) = </span><span style="color:#569CD6">undefined</span><span style="color:#D4D4D4">;</span></span>
+<span><span style="color:#569CD6">    var</span><span style="color:#D4D4D4"> is_initialized: </span><span style="color:#569CD6">bool</span><span style="color:#D4D4D4"> = </span><span style="color:#569CD6">false</span><span style="color:#D4D4D4">;</span></span>
+<span></span>
+<span><span style="color:#6A9955">    /// Inicializa a engine de assets. (Chamado pela GameEngine futuramente)</span></span>
+<span><span style="color:#569CD6">    pub</span><span style="color:#569CD6"> fn</span><span style="color:#D4D4D4"> init(allocator: std.mem.Allocator) </span><span style="color:#569CD6">void</span><span style="color:#D4D4D4"> {</span></span>
+<span><span style="color:#569CD6">        if</span><span style="color:#D4D4D4"> (is_initialized) </span><span style="color:#569CD6">return</span><span style="color:#D4D4D4">;</span></span>
+<span><span style="color:#D4D4D4">        texture_registry = std.AutoHashMap(</span><span style="color:#569CD6">u32</span><span style="color:#D4D4D4">, rl.Texture2D).init(allocator);</span></span>
+<span><span style="color:#D4D4D4">        is_initialized = </span><span style="color:#569CD6">true</span><span style="color:#D4D4D4">;</span></span>
+<span><span style="color:#D4D4D4">    }</span></span>
+<span></span>
+<span><span style="color:#6A9955">    /// Descarrega todos os assets da e limpa a memória da RAM</span></span>
+<span><span style="color:#569CD6">    pub</span><span style="color:#569CD6"> fn</span><span style="color:#D4D4D4"> deinit() </span><span style="color:#569CD6">void</span><span style="color:#D4D4D4"> {</span></span>
+<span><span style="color:#569CD6">        if</span><span style="color:#D4D4D4"> (!is_initialized) </span><span style="color:#569CD6">return</span><span style="color:#D4D4D4">;</span></span>
+<span></span>
+<span><span style="color:#569CD6">        var</span><span style="color:#D4D4D4"> it = texture_registry.valueIterator();</span></span>
+<span><span style="color:#569CD6">        while</span><span style="color:#D4D4D4"> (it.next()) |tex| {</span></span>
+<span><span style="color:#D4D4D4">            rl.UnloadTexture(tex.*);</span></span>
+<span><span style="color:#D4D4D4">        }</span></span>
+<span></span>
+<span><span style="color:#D4D4D4">        texture_registry.deinit();</span></span>
+<span><span style="color:#D4D4D4">        is_initialized = </span><span style="color:#569CD6">false</span><span style="color:#D4D4D4">;</span></span>
+<span><span style="color:#D4D4D4">    }</span></span>
+<span></span>
+<span><span style="color:#6A9955">    /// Algoritmo de Hash FNV-1a de 32-bit.</span></span>
+<span><span style="color:#569CD6">    pub</span><span style="color:#569CD6"> fn</span><span style="color:#D4D4D4"> hashString(str: []</span><span style="color:#569CD6">const</span><span style="color:#569CD6"> u8</span><span style="color:#D4D4D4">) </span><span style="color:#569CD6">u32</span><span style="color:#D4D4D4"> {</span></span>
+<span><span style="color:#569CD6">        var</span><span style="color:#D4D4D4"> hash: </span><span style="color:#569CD6">u32</span><span style="color:#D4D4D4"> = </span><span style="color:#B5CEA8">2166136261</span><span style="color:#D4D4D4">;</span></span>
+<span><span style="color:#569CD6">        for</span><span style="color:#D4D4D4"> (str) |c| {</span></span>
+<span><span style="color:#D4D4D4">            hash ^= c;</span></span>
+<span><span style="color:#D4D4D4">            hash *%= </span><span style="color:#B5CEA8">16777619</span><span style="color:#D4D4D4">; </span><span style="color:#6A9955">// Wrap-around overflow idêntico ao JS</span></span>
+<span><span style="color:#D4D4D4">        }</span></span>
+<span><span style="color:#569CD6">        return</span><span style="color:#D4D4D4"> hash;</span></span>
+<span><span style="color:#D4D4D4">    }</span></span>
+<span></span>
+<span><span style="color:#6A9955">    /// Retorna uma textura baseada no seu Hash ID numérico.</span></span>
+<span><span style="color:#569CD6">    pub</span><span style="color:#569CD6"> fn</span><span style="color:#D4D4D4"> getTexture(id: </span><span style="color:#569CD6">u32</span><span style="color:#D4D4D4">) ?rl.Texture2D {</span></span>
+<span><span style="color:#569CD6">        return</span><span style="color:#D4D4D4"> texture_registry.get(id);</span></span>
+<span><span style="color:#D4D4D4">    }</span></span>
+<span></span>
+<span><span style="color:#6A9955">    // ============================================================================</span></span>
+<span><span style="color:#6A9955">    // CARREGAMENTO (LOADING)</span></span>
+<span><span style="color:#6A9955">    // ============================================================================</span></span>
+<span></span>
+<span><span style="color:#6A9955">    /// Carrega SingleSprites síncronamente do disco para a memória.</span></span>
+<span><span style="color:#569CD6">    pub</span><span style="color:#569CD6"> fn</span><span style="color:#D4D4D4"> loadSingleSprites(allocator: std.mem.Allocator, io: std.Io, paths: []</span><span style="color:#569CD6">const</span><span style="color:#D4D4D4"> []</span><span style="color:#569CD6">const</span><span style="color:#569CD6"> u8</span><span style="color:#D4D4D4">) ![]SingleSprite {</span></span>
+<span><span style="color:#6A9955">        // 1. Lê e decodifica os JSONs</span></span>
+<span><span style="color:#569CD6">        const</span><span style="color:#D4D4D4"> parsed_jsons = </span><span style="color:#569CD6">try</span><span style="color:#D4D4D4"> FileIO.loadSpriteFiles(JsonSprite, allocator, io, paths);</span></span>
+<span><span style="color:#569CD6">        defer</span><span style="color:#D4D4D4"> {</span></span>
+<span><span style="color:#6A9955">            // Limpa o lixo de memória do parse JSON ao fim da função!</span></span>
+<span><span style="color:#569CD6">            for</span><span style="color:#D4D4D4"> (parsed_jsons) |p| p.deinit();</span></span>
+<span><span style="color:#D4D4D4">            allocator.free(parsed_jsons);</span></span>
+<span><span style="color:#D4D4D4">        }</span></span>
+<span></span>
+<span><span style="color:#6A9955">        // 2. Resolve dependências de imagens sem duplica-las</span></span>
+<span><span style="color:#569CD6">        try</span><span style="color:#D4D4D4"> loadAndRegisterImages(allocator, parsed_jsons);</span></span>
+<span></span>
+<span><span style="color:#6A9955">        // 3. Constrói os Sprites Nativos</span></span>
+<span><span style="color:#569CD6">        var</span><span style="color:#D4D4D4"> sprites = </span><span style="color:#569CD6">try</span><span style="color:#D4D4D4"> allocator.alloc(SingleSprite, parsed_jsons.len);</span></span>
+<span></span>
+<span><span style="color:#569CD6">        for</span><span style="color:#D4D4D4"> (parsed_jsons, </span><span style="color:#B5CEA8">0</span><span style="color:#D4D4D4">..) |p, i| {</span></span>
+<span><span style="color:#569CD6">            const</span><span style="color:#D4D4D4"> json = p.value;</span></span>
+<span><span style="color:#569CD6">            if</span><span style="color:#D4D4D4"> (!std.mem.eql(</span><span style="color:#569CD6">u8</span><span style="color:#D4D4D4">, json.</span><span style="color:#569CD6">type</span><span style="color:#D4D4D4">, </span><span style="color:#CE9178">"single_sprite"</span><span style="color:#D4D4D4">) </span><span style="color:#569CD6">or</span><span style="color:#D4D4D4"> json.frames.len != </span><span style="color:#B5CEA8">1</span><span style="color:#D4D4D4">) {</span></span>
+<span><span style="color:#569CD6">                return</span><span style="color:#569CD6"> error</span><span style="color:#D4D4D4">.InvalidSpriteFormat;</span></span>
+<span><span style="color:#D4D4D4">            }</span></span>
+<span></span>
+<span><span style="color:#569CD6">            const</span><span style="color:#D4D4D4"> tex_id = hashString(json.imagePath);</span></span>
+<span><span style="color:#569CD6">            const</span><span style="color:#D4D4D4"> frame = Frame.init(json.frames[</span><span style="color:#B5CEA8">0</span><span style="color:#D4D4D4">].cutX, json.frames[</span><span style="color:#B5CEA8">0</span><span style="color:#D4D4D4">].cutY, &#x26;.{});</span></span>
+<span></span>
+<span><span style="color:#D4D4D4">            sprites[i] = SingleSprite.init(</span></span>
+<span><span style="color:#D4D4D4">                tex_id,</span></span>
+<span><span style="color:#D4D4D4">                json.posX,</span></span>
+<span><span style="color:#D4D4D4">                json.posY,</span></span>
+<span><span style="color:#D4D4D4">                json.speedX,</span></span>
+<span><span style="color:#D4D4D4">                json.speedY,</span></span>
+<span><span style="color:#D4D4D4">                json.width,</span></span>
+<span><span style="color:#D4D4D4">                json.height,</span></span>
+<span><span style="color:#D4D4D4">                json.drawWidth,</span></span>
+<span><span style="color:#D4D4D4">                json.drawHeight,</span></span>
+<span><span style="color:#D4D4D4">                frame,</span></span>
+<span><span style="color:#D4D4D4">            );</span></span>
+<span><span style="color:#D4D4D4">        }</span></span>
+<span></span>
+<span><span style="color:#569CD6">        return</span><span style="color:#D4D4D4"> sprites;</span></span>
+<span><span style="color:#D4D4D4">    }</span></span>
+<span></span>
+<span><span style="color:#6A9955">    /// Carrega MultiSprites síncronamente do disco para a memória.</span></span>
+<span><span style="color:#569CD6">    pub</span><span style="color:#569CD6"> fn</span><span style="color:#D4D4D4"> loadMultiSprites(allocator: std.mem.Allocator, io: std.Io, paths: []</span><span style="color:#569CD6">const</span><span style="color:#D4D4D4"> []</span><span style="color:#569CD6">const</span><span style="color:#569CD6"> u8</span><span style="color:#D4D4D4">) ![]MultiSprite {</span></span>
+<span><span style="color:#569CD6">        const</span><span style="color:#D4D4D4"> parsed_jsons = </span><span style="color:#569CD6">try</span><span style="color:#D4D4D4"> FileIO.loadSpriteFiles(JsonSprite, allocator, io, paths);</span></span>
+<span><span style="color:#569CD6">        defer</span><span style="color:#D4D4D4"> {</span></span>
+<span><span style="color:#569CD6">            for</span><span style="color:#D4D4D4"> (parsed_jsons) |p| p.deinit();</span></span>
+<span><span style="color:#D4D4D4">            allocator.free(parsed_jsons);</span></span>
+<span><span style="color:#D4D4D4">        }</span></span>
+<span></span>
+<span><span style="color:#569CD6">        try</span><span style="color:#D4D4D4"> loadAndRegisterImages(allocator, parsed_jsons);</span></span>
+<span></span>
+<span><span style="color:#569CD6">        var</span><span style="color:#D4D4D4"> sprites = </span><span style="color:#569CD6">try</span><span style="color:#D4D4D4"> allocator.alloc(MultiSprite, parsed_jsons.len);</span></span>
+<span></span>
+<span><span style="color:#569CD6">        for</span><span style="color:#D4D4D4"> (parsed_jsons, </span><span style="color:#B5CEA8">0</span><span style="color:#D4D4D4">..) |p, i| {</span></span>
+<span><span style="color:#569CD6">            const</span><span style="color:#D4D4D4"> json = p.value;</span></span>
+<span><span style="color:#569CD6">            if</span><span style="color:#D4D4D4"> (!std.mem.eql(</span><span style="color:#569CD6">u8</span><span style="color:#D4D4D4">, json.</span><span style="color:#569CD6">type</span><span style="color:#D4D4D4">, </span><span style="color:#CE9178">"multi_sprite"</span><span style="color:#D4D4D4">) </span><span style="color:#569CD6">or</span><span style="color:#D4D4D4"> json.frames.len == </span><span style="color:#B5CEA8">0</span><span style="color:#D4D4D4">) {</span></span>
+<span><span style="color:#569CD6">                return</span><span style="color:#569CD6"> error</span><span style="color:#D4D4D4">.InvalidSpriteFormat;</span></span>
+<span><span style="color:#D4D4D4">            }</span></span>
+<span></span>
+<span><span style="color:#569CD6">            const</span><span style="color:#D4D4D4"> tex_id = hashString(json.imagePath);</span></span>
+<span></span>
+<span><span style="color:#6A9955">            // Alocação profunda: O MultiSprite exige que a memória dos frames sobreviva à função.</span></span>
+<span><span style="color:#569CD6">            var</span><span style="color:#D4D4D4"> frames = </span><span style="color:#569CD6">try</span><span style="color:#D4D4D4"> allocator.alloc(Frame, json.frames.len);</span></span>
+<span></span>
+<span><span style="color:#569CD6">            for</span><span style="color:#D4D4D4"> (json.frames, </span><span style="color:#B5CEA8">0</span><span style="color:#D4D4D4">..) |jframe, f| {</span></span>
+<span><span style="color:#569CD6">                var</span><span style="color:#D4D4D4"> collision_boxes: []CollisionBox = &#x26;.{};</span></span>
+<span></span>
+<span><span style="color:#569CD6">                if</span><span style="color:#D4D4D4"> (jframe.collisionBoxes) |cboxes| {</span></span>
+<span><span style="color:#D4D4D4">                    collision_boxes = </span><span style="color:#569CD6">try</span><span style="color:#D4D4D4"> allocator.alloc(CollisionBox, cboxes.len);</span></span>
+<span><span style="color:#569CD6">                    for</span><span style="color:#D4D4D4"> (cboxes, </span><span style="color:#B5CEA8">0</span><span style="color:#D4D4D4">..) |cb, c| {</span></span>
+<span><span style="color:#D4D4D4">                        collision_boxes[c] = CollisionBox.init(cb.offsetX, cb.offsetY, cb.w, cb.h);</span></span>
+<span><span style="color:#D4D4D4">                    }</span></span>
+<span><span style="color:#D4D4D4">                }</span></span>
+<span></span>
+<span><span style="color:#D4D4D4">                frames[f] = Frame.init(jframe.cutX, jframe.cutY, collision_boxes);</span></span>
+<span><span style="color:#D4D4D4">            }</span></span>
+<span></span>
+<span><span style="color:#D4D4D4">            sprites[i] = MultiSprite.init(</span></span>
+<span><span style="color:#D4D4D4">                tex_id,</span></span>
+<span><span style="color:#D4D4D4">                json.posX,</span></span>
+<span><span style="color:#D4D4D4">                json.posY,</span></span>
+<span><span style="color:#D4D4D4">                json.speedX,</span></span>
+<span><span style="color:#D4D4D4">                json.speedY,</span></span>
+<span><span style="color:#D4D4D4">                json.width,</span></span>
+<span><span style="color:#D4D4D4">                json.height,</span></span>
+<span><span style="color:#D4D4D4">                json.drawWidth,</span></span>
+<span><span style="color:#D4D4D4">                json.drawHeight,</span></span>
+<span><span style="color:#D4D4D4">                frames,</span></span>
+<span><span style="color:#D4D4D4">            );</span></span>
+<span><span style="color:#D4D4D4">        }</span></span>
+<span></span>
+<span><span style="color:#569CD6">        return</span><span style="color:#D4D4D4"> sprites;</span></span>
+<span><span style="color:#D4D4D4">    }</span></span>
+<span></span>
+<span><span style="color:#6A9955">    // ============================================================================</span></span>
+<span><span style="color:#6A9955">    // MÉTODOS INTERNOS</span></span>
+<span><span style="color:#6A9955">    // ============================================================================</span></span>
+<span></span>
+<span><span style="color:#6A9955">    /// Função auxiliar para ler os paths das imagens do JSON, filtrar duplicatas e subir pra VRAM.</span></span>
+<span><span style="color:#569CD6">    fn</span><span style="color:#D4D4D4"> loadAndRegisterImages(allocator: std.mem.Allocator, parsed_jsons: []std.json.Parsed(JsonSprite)) !</span><span style="color:#569CD6">void</span><span style="color:#D4D4D4"> {</span></span>
+<span><span style="color:#569CD6">        var</span><span style="color:#D4D4D4"> unique_images = std.StringHashMap(</span><span style="color:#569CD6">void</span><span style="color:#D4D4D4">).init(allocator);</span></span>
+<span><span style="color:#569CD6">        defer</span><span style="color:#D4D4D4"> unique_images.deinit();</span></span>
+<span></span>
+<span><span style="color:#569CD6">        for</span><span style="color:#D4D4D4"> (parsed_jsons) |p| {</span></span>
+<span><span style="color:#569CD6">            try</span><span style="color:#D4D4D4"> unique_images.put(p.value.imagePath, {});</span></span>
+<span><span style="color:#D4D4D4">        }</span></span>
+<span></span>
+<span><span style="color:#569CD6">        var</span><span style="color:#D4D4D4"> image_paths: std.ArrayList([]</span><span style="color:#569CD6">const</span><span style="color:#569CD6"> u8</span><span style="color:#D4D4D4">) = .empty;</span></span>
+<span><span style="color:#569CD6">        defer</span><span style="color:#D4D4D4"> image_paths.deinit(allocator);</span></span>
+<span></span>
+<span><span style="color:#569CD6">        var</span><span style="color:#D4D4D4"> it = unique_images.keyIterator();</span></span>
+<span><span style="color:#569CD6">        while</span><span style="color:#D4D4D4"> (it.next()) |key| {</span></span>
+<span><span style="color:#569CD6">            try</span><span style="color:#D4D4D4"> image_paths.append(allocator, key.*);</span></span>
+<span><span style="color:#D4D4D4">        }</span></span>
+<span></span>
+<span><span style="color:#569CD6">        const</span><span style="color:#D4D4D4"> loaded_textures = </span><span style="color:#569CD6">try</span><span style="color:#D4D4D4"> FileIO.loadImages(allocator, image_paths.items);</span></span>
+<span><span style="color:#569CD6">        defer</span><span style="color:#D4D4D4"> allocator.free(loaded_textures);</span></span>
+<span></span>
+<span><span style="color:#569CD6">        for</span><span style="color:#D4D4D4"> (image_paths.items, </span><span style="color:#B5CEA8">0</span><span style="color:#D4D4D4">..) |img_path, i| {</span></span>
+<span><span style="color:#569CD6">            const</span><span style="color:#D4D4D4"> id = hashString(img_path);</span></span>
+<span></span>
+<span><span style="color:#6A9955">            // Registra apenas se não existir. Se existir, descarrega a duplicata para limpar a GPU.</span></span>
+<span><span style="color:#569CD6">            if</span><span style="color:#D4D4D4"> (!texture_registry.contains(id)) {</span></span>
+<span><span style="color:#569CD6">                try</span><span style="color:#D4D4D4"> texture_registry.put(id, loaded_textures[i]);</span></span>
+<span><span style="color:#D4D4D4">            } </span><span style="color:#569CD6">else</span><span style="color:#D4D4D4"> {</span></span>
+<span><span style="color:#D4D4D4">                rl.UnloadTexture(loaded_textures[i]);</span></span>
+<span><span style="color:#D4D4D4">            }</span></span>
+<span><span style="color:#D4D4D4">        }</span></span>
+<span><span style="color:#D4D4D4">    }</span></span>
+<span><span style="color:#D4D4D4">};</span></span>
+<span></span></code></pre>
+</div>

@@ -1,7 +1,7 @@
 import { MultiSprite } from "../../engine_ts/sprites/multi_sprite";
 import { SingleSprite } from "../../engine_ts/sprites/single_sprite";
-import { AssetManager } from "../../engine_ts/utils/asset_manager";
-import { InputManager as IM } from "../../engine_ts/utils/input_manager";
+import { AssetManager } from "../../engine_ts/resources/asset_manager";
+import { InputManager as IM } from "../../engine_ts/resources/input_manager";
 import { ISceneLayer } from "../../engine_ts/scenes/scene_layers/i_scene_layer";
 import { SimpleSceneLayer } from "../../engine_ts/scenes/scene_layers/simple_scene_layer";
 import { ISprite } from "../../engine_ts/sprites/i_sprite";
@@ -28,9 +28,9 @@ export class GameScene {
             'sprites/faixa.spr'
         ]);
         const spriteList_02: MultiSprite[] = await AssetManager.loadMultiSprites([
-            'sprites/person.spr',
-            'sprites/inimigo.spr',
-            'sprites/bolinha.spr'
+            'sprites/person.mspr',
+            'sprites/inimigo.mspr',
+            'sprites/bolinha.mspr'
         ]);
         // armazena as refs dos sprites
         this.fundo = spriteList_01[0];

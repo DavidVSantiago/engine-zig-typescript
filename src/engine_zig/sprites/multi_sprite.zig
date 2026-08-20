@@ -2,7 +2,7 @@ const std = @import("std");
 const CollisionBox = @import("data/collision_box.zig").CollisionBox;
 const Frame = @import("data/frame.zig").Frame;
 const Sprite = @import("sprite.zig").Sprite;
-const AssetManager = @import("../utils/asset_manager.zig").AssetManager;
+const AssetManager = @import("../resources/asset_manager.zig").AssetManager;
 
 /// Sprite estático com múltiplos quadros
 pub const MultiSprite = struct {
@@ -132,8 +132,8 @@ pub const MultiSprite = struct {
         const interp_y_sub = self.base.prev_pos_y + @divTrunc(delta_y * alpha_fixed, 256);
 
         // 4. Converte dimensões estáticas para pixels
-        const cut_x: f32 = @floatFromInt(self.frame_list[self.current_frame].cut_x >> 8);
-        const cut_y: f32 = @floatFromInt(self.frame_list[self.current_frame].cut_y >> 8);
+        const cut_x: f32 = @floatFromInt(self.frame_list[self.current_frame].cut_x);
+        const cut_y: f32 = @floatFromInt(self.frame_list[self.current_frame].cut_y);
         const cut_w: f32 = @floatFromInt(self.base.width >> 8);
         const cut_h: f32 = @floatFromInt(self.base.height >> 8);
 
@@ -202,7 +202,7 @@ test "MultiSprite.init getters/setters e metodos" {
 
     // Muda de frame e valida
     multi.current_frame = 1;
-    try std.testing.expectEqual(@as(i32, 32 << 8), multi.getCutX());
+    try std.testing.expectEqual(@as(i32, 32), multi.getCutX());
     try std.testing.expectEqual(@as(usize, 0), multi.getCollisionBoxList().len);
 
     // Valida movimentacao delegada

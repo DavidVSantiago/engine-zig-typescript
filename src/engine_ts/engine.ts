@@ -1,6 +1,6 @@
 import { IScene } from "./scenes/i_scene";
-import { InputManager } from "./utils/input_manager";
-import { timer } from "./utils/timer";
+import { InputManager } from "./resources/input_manager";
+import { timer } from "./lib/timer";
 
 class Engine {
 

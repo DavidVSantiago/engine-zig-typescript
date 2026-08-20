@@ -10,8 +10,8 @@ pub const Frame = struct {
     /// construtor
     pub inline fn init(cut_x: i32, cut_y: i32, collision_box_list: []const CollisionBox) Frame {
         return .{
-            .cut_x = cut_x << 8,
-            .cut_y = cut_y << 8,
+            .cut_x = cut_x,
+            .cut_y = cut_y,
             .collision_box_list = collision_box_list,
         };
     }
@@ -20,10 +20,10 @@ pub const Frame = struct {
 // ============================================================================
 // TESTES UNITÁRIOS
 // ============================================================================
-test "Frame.init conversao 8.8 sem caixas de colisao" {
+test "Frame.init sem caixas de colisao" {
     const frame = Frame.init(32, 64, &.{});
-    try std.testing.expectEqual(@as(i32, 32 << 8), frame.cut_x);
-    try std.testing.expectEqual(@as(i32, 64 << 8), frame.cut_y);
+    try std.testing.expectEqual(@as(i32, 32), frame.cut_x);
+    try std.testing.expectEqual(@as(i32, 64), frame.cut_y);
     try std.testing.expectEqual(@as(usize, 0), frame.collision_box_list.len);
 }
 test "Frame.init com caixas de colisao" {

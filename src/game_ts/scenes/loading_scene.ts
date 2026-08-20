@@ -1,5 +1,5 @@
 import { SimpleSceneLayer } from "../../engine_ts/scenes/scene_layers/simple_scene_layer";
-import { AssetManager } from "../../engine_ts/utils/asset_manager";
+import { AssetManager } from "../../engine_ts/resources/asset_manager";
 import { SingleSprite } from "../../engine_ts/sprites/single_sprite";
 import { ISceneLayer } from "../../engine_ts/scenes/scene_layers/i_scene_layer";
 import { ISprite } from "../../engine_ts/sprites/i_sprite";

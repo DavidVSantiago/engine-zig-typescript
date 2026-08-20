@@ -1,13 +1,14 @@
 const std = @import("std");
 const Frame = @import("data/frame.zig").Frame;
 const Sprite = @import("sprite.zig").Sprite;
-const AssetManager = @import("../utils/asset_manager.zig").AssetManager;
+const AssetManager = @import("../resources/asset_manager.zig").AssetManager;
 const rt = @import("raylib");
 
 /// Sprite estático com um único quadro
 pub const SingleSprite = struct {
     base: Sprite,
-    frame: Frame,
+    cut_x: i32,
+    cut_y: i32,
 
     /// construtor
     pub inline fn init(
@@ -20,11 +21,13 @@ pub const SingleSprite = struct {
         height: i32,
         draw_width: i32,
         draw_height: i32,
-        frame: Frame,
+        cut_x: i32,
+        cut_y: i32,
     ) SingleSprite {
         return .{
             .base = Sprite.init(texture_id, pos_x, pos_y, speed_x, speed_y, width, height, draw_width, draw_height),
-            .frame = frame,
+            .cut_x = cut_x,
+            .cut_y = cut_y,
         };
     }
 
@@ -60,10 +63,10 @@ pub const SingleSprite = struct {
         return self.base.draw_height;
     }
     pub inline fn getCutX(self: SingleSprite) i32 {
-        return self.frame.cut_x;
+        return self.cut_x;
     }
     pub inline fn getCutY(self: SingleSprite) i32 {
-        return self.frame.cut_y;
+        return self.cut_y;
     }
 
     pub inline fn setPosX(self: *SingleSprite, pos_x: i32) void {
@@ -94,10 +97,10 @@ pub const SingleSprite = struct {
         self.base.draw_height = draw_height;
     }
     pub inline fn setCutX(self: *SingleSprite, cut_x: i32) void {
-        self.frame.cut_x = cut_x;
+        self.cut_x = cut_x;
     }
     pub inline fn setCutY(self: *SingleSprite, cut_y: i32) void {
-        self.frame.cut_y = cut_y;
+        self.cut_y = cut_y;
     }
 
     // ========================================================================
@@ -133,8 +136,8 @@ pub const SingleSprite = struct {
         const interp_y_sub = self.base.prev_pos_y + @divTrunc(delta_y * alpha_fixed, 256);
 
         // 4. Converte dimensões estáticas para pixels
-        const cut_x: f32 = @floatFromInt(self.frame.cut_x >> 8);
-        const cut_y: f32 = @floatFromInt(self.frame.cut_y >> 8);
+        const cut_x: f32 = @floatFromInt(self.cut_x);
+        const cut_y: f32 = @floatFromInt(self.cut_y);
         const cut_w: f32 = @floatFromInt(self.base.width >> 8);
         const cut_h: f32 = @floatFromInt(self.base.height >> 8);
 
@@ -169,8 +172,7 @@ pub const SingleSprite = struct {
 // ============================================================================
 
 test "SingleSprite.init e getters/setters" {
-    const frame = Frame.init(10, 20, &.{});
-    var single = SingleSprite.init(42, 1, 2, 3, 4, 16, 16, 32, 32, frame);
+    var single = SingleSprite.init(42, 1, 2, 3, 4, 16, 16, 32, 32, 10, 20);
 
     // Valida getters
     try std.testing.expectEqual(@as(i32, 1 << 8), single.getPosX());
@@ -182,8 +184,8 @@ test "SingleSprite.init e getters/setters" {
     try std.testing.expectEqual(@as(i32, 16 << 8), single.getHeight());
     try std.testing.expectEqual(@as(i32, 32 << 8), single.getDrawWidth());
     try std.testing.expectEqual(@as(i32, 32 << 8), single.getDrawHeight());
-    try std.testing.expectEqual(@as(i32, 10 << 8), single.getCutX());
-    try std.testing.expectEqual(@as(i32, 20 << 8), single.getCutY());
+    try std.testing.expectEqual(@as(i32, 10), single.getCutX());
+    try std.testing.expectEqual(@as(i32, 20), single.getCutY());
 
     // Valida setters
     single.setPosX(500);
@@ -193,8 +195,7 @@ test "SingleSprite.init e getters/setters" {
 }
 
 test "SingleSprite moveX e moveY delegam para base" {
-    const frame = Frame.init(0, 0, &.{});
-    var single = SingleSprite.init(42, 10, 20, 5, -2, 16, 16, 16, 16, frame);
+    var single = SingleSprite.init(42, 10, 20, 5, -2, 16, 16, 16, 16, 0, 0);
 
     single.moveX();
     try std.testing.expectEqual(@as(i32, 15 << 8), single.getPosX());

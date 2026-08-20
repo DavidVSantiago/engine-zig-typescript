@@ -1,6 +1,5 @@
 {
     "imagePath": "imgs/sprite_person_bola.png",
-    "type": "multi_sprite",
     "posX": 305,
     "posY": 225,
     "speedX": 0,

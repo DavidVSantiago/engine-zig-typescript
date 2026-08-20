@@ -1,6 +1,5 @@
 {
     "imagePath": "imgs/sprite_person_bola.png",
-    "type": "animated_sprite",
     "posX": 350,
     "posY": 200,
     "speedX": 0,

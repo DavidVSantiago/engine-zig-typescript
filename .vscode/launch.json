@@ -2,6 +2,36 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Debug Bun Test (Arquivo Aberto)",
+            "type": "bun",
+            "request": "launch",
+            "program": "${file}",
+            "runtimeArgs": [
+                "test"
+            ],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "name": "Debug Bun Test (Todos os Testes)",
+            "type": "bun",
+            "request": "launch",
+            "program": "test",
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "name": "Debug Bun Test (Sem Extensão / JavaScript Debugger)",
+            "type": "node",
+            "request": "launch",
+            "runtimeExecutable": "bun",
+            "runtimeArgs": [
+                "test"
+            ],
+            "cwd": "${workspaceFolder}",
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen"
+        },
+        {
             "name": "Debug Zig Tests (Parar no Breakpoint)",
             "type": "lldb",
             "request": "launch",

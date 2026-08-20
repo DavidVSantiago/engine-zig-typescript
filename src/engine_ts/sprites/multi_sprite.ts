@@ -1,7 +1,7 @@
 import { Frame } from "./data/frame";
 import { CollisionBox } from "./data/collision_box";
 import { Sprite } from "./sprite";
-import { AssetManager } from "../utils/asset_manager";
+import { AssetManager } from "../resources/asset_manager";
 
 /** Representa um sprite estático com caixas de colisões(1 ou mais frames controlados manualmente) */
 export class MultiSprite {
@@ -83,15 +83,15 @@ export class MultiSprite {
         const interpY = Math.round(this.base.prevPosY + (this.base.posY - this.base.prevPosY) * alpha);
 
         // Converte sub-pixels para pixels reais na hora de desenhar (>> 8 = dividir por 256)
-        const cutX = (frame.cutX >> 8);
-        const cutY = (frame.cutY >> 8);
+        const cutX = (frame.cutX);
+        const cutY = (frame.cutY);
         const cutW = (this.base.width >> 8);
         const cutH = (this.base.heigth >> 8);
         const drawX = (interpX >> 8);
         const drawY = (interpY >> 8);
         const drawW = (this.base.drawWidth >> 8);
         const drawH = (this.base.drawHeigth >> 8);
-        
+
         const img = AssetManager.getTexture(this.base.textureId);
         if (!img) return; // Previne crash se a imagem não estiver carregada
 

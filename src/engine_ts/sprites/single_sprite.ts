@@ -1,11 +1,12 @@
 import { Frame } from "./data/frame";
 import { Sprite } from "./sprite";
-import { AssetManager } from "../utils/asset_manager";
+import { AssetManager } from "../resources/asset_manager";
 
 /** Representa um sprite único sem caixas de colisões*/
 export class SingleSprite {
     public base: Sprite; // atributos genericos de todos os tipos de sprites
-    public frame: Frame; // representa o frame unico de SingleSprite
+    public cutX: number;
+    public cutY: number;
 
     constructor(
         textureId: number,
@@ -13,7 +14,7 @@ export class SingleSprite {
         speedX: number = 0, speedY: number = 0,
         width: number = 0, heigth: number = 0,
         drawWidth: number = 0, drawHeigth: number = 0,
-        frame: Frame) {
+        cutX: number = 0, cutY: number = 0) {
 
         // inicializa a base com os atributos genéricos
         this.base = new Sprite(
@@ -22,7 +23,9 @@ export class SingleSprite {
             width, heigth,
             drawWidth, drawHeigth
         );
-        this.frame = frame; // atributo específico de SingleSprite
+
+        this.cutX = cutX;
+        this.cutY = cutY;
     }
 
     /**********************************************************/
@@ -38,8 +41,8 @@ export class SingleSprite {
     public getHeight(): number { return this.base.heigth; }
     public getDrawWidth(): number { return this.base.drawWidth; }
     public getDrawHeigth(): number { return this.base.drawHeigth; }
-    public getCutX(): number { return this.frame.cutX; }
-    public getCutY(): number { return this.frame.cutY; }
+    public getCutX(): number { return this.cutX; }
+    public getCutY(): number { return this.cutY; }
 
     public setPosX(posX: number): void { this.base.posX = posX; }
     public setPosY(posY: number): void { this.base.posY = posY; }
@@ -50,8 +53,8 @@ export class SingleSprite {
     public setHeigth(heigth: number): void { this.base.heigth = heigth; }
     public setDrawWidth(drawWidth: number): void { this.base.drawWidth = drawWidth; }
     public setDrawHeigth(drawHeigth: number): void { this.base.drawHeigth = drawHeigth; }
-    public setCutX(cutX: number): void { this.frame.cutX = cutX; }
-    public setCutY(cutY: number): void { this.frame.cutY = cutY; }
+    public setCutX(cutX: number): void { this.cutX = cutX; }
+    public setCutY(cutY: number): void { this.cutY = cutY; }
 
     /**********************************************************/
     /** MÉTODOS */
@@ -74,15 +77,15 @@ export class SingleSprite {
         const interpY = Math.round(this.base.prevPosY + (this.base.posY - this.base.prevPosY) * alpha);
 
         // Converte sub-pixels para pixels reais na hora de desenhar (>> 8 = dividir por 256)
-        const cutX = (this.frame.cutX >> 8);
-        const cutY = (this.frame.cutY >> 8);
+        const cutX = (this.cutX);
+        const cutY = (this.cutY);
         const cutW = (this.base.width >> 8);
         const cutH = (this.base.heigth >> 8);
         const drawX = (interpX >> 8);
         const drawY = (interpY >> 8);
         const drawW = (this.base.drawWidth >> 8);
         const drawH = (this.base.drawHeigth >> 8);
-        
+
         const img = AssetManager.getTexture(this.base.textureId);
         if (!img) return; // Previne crash se a imagem não estiver carregada
 

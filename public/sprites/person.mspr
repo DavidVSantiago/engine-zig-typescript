@@ -1,7 +1,6 @@
 {
-    "imagePath": "imgs/sprite_inimigo.png",
-    "type": "multi_sprite",
-    "posX": 50,
+    "imagePath": "imgs/sprite_person_bola.png",
+    "posX": 490,
     "posY": 190,
     "speedX": 0,
     "speedY": 0,

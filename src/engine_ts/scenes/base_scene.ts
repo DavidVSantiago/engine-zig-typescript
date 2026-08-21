@@ -7,6 +7,17 @@ export class BaseScene {
         this.layerList = layerList;
     }
 
+    /**********************************************************/
+    /** GETTERS & SETTERS */
+    /**********************************************************/
+
+    public getLayerList(): ISceneLayer[] { return this.layerList; }
+    public setLayerList(layerList: ISceneLayer[]): void { this.layerList = layerList; }
+
+    /**********************************************************/
+    /** MÉTODOS */
+    /**********************************************************/
+
     public unload(): void {
         this.layerList = [];
     }

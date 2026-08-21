@@ -11,14 +11,14 @@ class Engine {
     public canvas!: HTMLCanvasElement;
     public ctx!: CanvasRenderingContext2D;
 
-    public readonly TICKS_PER_SECOND = 60;
-    public MS_PER_TICK!: number;
-    public readonly MAX_CATCH_UP_TICKS = 5;
-
-    public previousTime!: number;
-    public accumulator!: number;
     public currentScene!: IScene;
     public loadingScene!: IScene;
+
+    private isLoading: boolean = false;
+    private hasRenderedLoadingOnce: boolean = false;
+    private hasStartedInit: boolean = false;
+    private isReady: boolean = false;
+    private sceneToLoad!: IScene;
 
     /**********************************************************/
     /** FUNÇÕES DE INICIALIZAÇÃO */
@@ -28,8 +28,6 @@ class Engine {
         console.log("Iniciando Engine...");
         this.canvas = document.getElementsByTagName('canvas')[0] as HTMLCanvasElement;
         this.ctx = this.canvas.getContext("2d")!;
-        this.MS_PER_TICK = (1000 / this.TICKS_PER_SECOND);
-        this.accumulator = 0;
 
         /** para fazer os eventos de teclado serem passados para o InputManager (iguais ao raylib) */
         window.addEventListener("keydown", (e) => {
@@ -88,36 +86,31 @@ class Engine {
     /** FUNÇÕES */
     /**********************************************************/
 
+    /** Recebe a interface VTable da cena atual */
     public setScene(scene: IScene) {
         this.currentScene = scene;
     }
 
+    /** Recebe a interface VTable da cena de loading */
     public setLoadingScene(scene: IScene) {
         this.loadingScene = scene;
     }
 
+    /** Dispara o gameloop */
     public startGame() {
-        this.previousTime = performance.now();
+        timer.initStartTime(performance.now()); // marca o tempo inicial do gameloop
         requestAnimationFrame((timestamp) => this.gameLoop(timestamp));
     }
 
-    public async changeScene(nextScene: IScene, minTicks: number = 60) {
-        this.currentScene = this.loadingScene; // seta cena atual para o loading
+    /** Troca a cena. Recebe a interface VTable da proxima cena e o tempo minimo para a mudança */
+    public changeScene(nextScene: IScene, minTicks: number = 60) {
+        this.sceneToLoad = nextScene;
+        this.isLoading = true;
+        this.hasRenderedLoadingOnce = false;
+        this.hasStartedInit = false;
+        this.isReady = false;
 
-        // Converte o minTicks para milissegundos
-        const minTime = minTicks * this.MS_PER_TICK;
-        const startTime = performance.now(); // tempo inicial do carregamento
-
-        await nextScene.init();
-
-        const elapsedTime = performance.now() - startTime; // tempo que levou para carregar os recursos
-
-        // se o tempo para carregar os recursos foi menor, espera a diferença
-        if (elapsedTime < minTime) {
-            const remainingTime = minTime - elapsedTime;
-            await new Promise(resolve => setTimeout(resolve, remainingTime));
-        }
-        this.currentScene = nextScene; // muda para a próxima cena
+        timer.setAlarm(minTicks); // Inicia o registro no timer (Polling)
     }
 
     /**********************************************************/
@@ -125,27 +118,42 @@ class Engine {
     /**********************************************************/
 
     public gameLoop(currentTime: number) {
-        let elapsed = currentTime - this.previousTime;
-        this.previousTime = currentTime;
+        timer.update(currentTime); // atualiza o timer
 
-        if (elapsed > this.MS_PER_TICK * this.MAX_CATCH_UP_TICKS) {
-            elapsed = this.MS_PER_TICK * this.MAX_CATCH_UP_TICKS;
+        // verifica se há um carregamento de tela em andamento
+        const renderScene = this.isLoading ? this.loadingScene : this.currentScene;
+
+        // atualiza a cena n vezes, de forma a compensar o possivel atraso de tempo
+        while (timer.isDelay()) {
+            renderScene.handleInput();
+            renderScene.update();
+            timer.tick(); // decrementa o delay (e o alarme!)
         }
 
-        this.accumulator += elapsed;
-        while (this.accumulator >= (this.MS_PER_TICK)) {
-            if (this.currentScene) {
-                this.currentScene.handleInput();
-                this.currentScene.update();
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height); // limpa o buffer de video
+        const alpha = timer.getAlphaTime(); // calcula o alpha para a interpolacao
+        renderScene.render(this.ctx, alpha); // renderiza a cena
+
+        // LÓGICA DE TRANSIÇÃO (100% SÍNCRONA / STATE MACHINE)
+        if (this.isLoading) {
+
+            // PASSO 1: Deixa o gameloop terminar 1 vez para o navegador pintar a tela de loading.
+            if (!this.hasRenderedLoadingOnce) {
+                this.hasRenderedLoadingOnce = true;
             }
-            timer.tick(); // atualiza o relógio do timer (fixed timestep)
-            this.accumulator -= this.MS_PER_TICK;
-        }
+            // PASSO 2: Agora sim, aceitamos o "engasgo" e travamos a execução chamando init().
+            else if (!this.hasStartedInit) {
+                this.hasStartedInit = true;
 
-        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        if (this.currentScene) {
-            const alpha = this.accumulator / this.MS_PER_TICK;
-            this.currentScene.render(this.ctx, alpha);
+                this.sceneToLoad.init(); // Execução bloqueante, sem Promises!
+
+                this.isReady = true; // Assim que destravar, marcamos como pronto.
+            }
+            // PASSO 3: Checa se o minTicks já passou.
+            else if (this.isReady && timer.isAlarmFinished()) {
+                this.currentScene = this.sceneToLoad;
+                this.isLoading = false;
+            }
         }
 
         requestAnimationFrame((timestamp) => this.gameLoop(timestamp));

@@ -1,5 +1,5 @@
 export interface IScene {
-    init(): Promise<void> | void;
+    init(): void;
     handleInput(): void;
     update(): void;
     render(ctx: CanvasRenderingContext2D, alpha: number): void;

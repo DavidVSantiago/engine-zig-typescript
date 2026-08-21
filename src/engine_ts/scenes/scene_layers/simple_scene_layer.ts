@@ -1,4 +1,3 @@
-
 import { ISprite } from "../../sprites/i_sprite";
 import { SceneLayer } from "./scene_layer";
 
@@ -10,8 +9,24 @@ export class SimpleSceneLayer {
     }
 
     /**********************************************************/
+    /** GETTERS & SETTERS */
+    /**********************************************************/
+
+    public getPosX(): number { return this.base.getPosX(); }
+    public getPosY(): number { return this.base.getPosY(); }
+    public getSpriteList(): ISprite[] { return this.base.getSpriteList(); }
+
+    public setPosX(posX: number): void { this.base.setPosX(posX); }
+    public setPosY(posY: number): void { this.base.setPosY(posY); }
+    public setSpriteList(spriteList: ISprite[]): void { this.base.setSpriteList(spriteList); }
+
+    /**********************************************************/
     /** MÉTODOS */
     /**********************************************************/
+
+    public unload(): void {
+        this.base.unload();
+    }
 
     public moveX(): void {
         for (let i = 0; i < this.base.spriteList.length; i++) {

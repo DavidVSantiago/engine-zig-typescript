@@ -1,8 +1,8 @@
 0
-23877 17451448556214577 1786285706614302300 f352a200d76ad0290d4a3f986b4c5832 1 compiler\test_runner.zig
-1379 562949953582920 1787362290087364900 4eb2e7c5ed248d7a78598eab1918b60c 0 src\engine_zig\test_runner.zig
+6842 17732923532925223 1786285706614302300 94485425635c9fcfeb1d01e1c18151bc 1 compiler\configurer.zig
+1212 6473924464564811 1787217779996201800 69f7d43a77f6eb683ee0c34bb34ef0d7 0 build.zig
+103 22799473113626004 1787363392716318400 35b10ba982858800c98ffbaad5536a86 2 o\1496efe95c3b78ef62827e5e1aa2303e\dependencies.zig
 21843 12947848928843997 1786285706566301900 32b701d4fafedbff4bdcf2b3240ae437 1 ubsan_rt.zig
-997 2814749767342242 1787155047698192300 e803e3e3a81e48e6221bef21c4d5d826 0 src\engine_zig\raylib.zig
 24441 10133099161737435 1786285702334264500 2eb59ded206c2edc1b295d918fa953ad 1 compiler_rt.zig
 11021 1125899907373333 1786285706558301900 a8fdd7cab3274f045988e2048f519606 1 std\std.zig
 2525 1125899907373285 1786285706486301200 71e0dabdb301ba10f8ca420941767e70 1 std\BitStack.zig
@@ -697,19 +697,4 @@
 419 844424930663088 1786285706518301500 ed7dfc04a5d0c4f0853edb5414ce981e 1 std\os\linux\bpf\btf_ext.zig
 24525 844424930663089 1786285706518301500 52c7fac6ad48da05270f91f073a4af79 1 std\os\linux\bpf\helpers.zig
 2972 1125899907373478 1786285706466301000 8c37c40098d399e3b36a078ce1d4e3a1 1 std\crypto\codecs\asn1\der\ArrayListReverse.zig
-1379 562949953582920 1787362290087364900 4eb2e7c5ed248d7a78598eab1918b60c 0 C:\Users\Acer\Documents\_CODES\engine-zig-typescript\src\engine_zig\test_runner.zig
-3223 20829148276815484 1786668832762263400 174f0a37f3106d67192e237170ca533b 0 C:\Users\Acer\Documents\_CODES\engine-zig-typescript\src\engine_zig\sprites\data\collision_box.zig
-1475 19421773393142935 1787242449225164800 cd443958432377bf1a6ee243b7f7265c 0 C:\Users\Acer\Documents\_CODES\engine-zig-typescript\src\engine_zig\sprites\data\frame.zig
-3366 2533274790826319 1787242357677948100 6b3b1038ad2acfbc40a2e8fefbd2d558 0 C:\Users\Acer\Documents\_CODES\engine-zig-typescript\src\engine_zig\sprites\sprite.zig
-7419 9851624185234689 1787242459050172900 82161c87573188b76419bb6f1aa17225 0 C:\Users\Acer\Documents\_CODES\engine-zig-typescript\src\engine_zig\sprites\single_sprite.zig
-7980 2533274790826318 1787242517781684600 ec5cc67e1495592e79c48305a7f73681 0 C:\Users\Acer\Documents\_CODES\engine-zig-typescript\src\engine_zig\sprites\multi_sprite.zig
-4438 16044073672727131 1787219246064521300 9408cca6f80f69c4b744a0ae2354a0e7 0 C:\Users\Acer\Documents\_CODES\engine-zig-typescript\src\engine_zig\lib\file_io.zig
-3766 2814749767326303 1787362305799256200 b5696fbc4678c5827a72e0aa9e6e866e 0 C:\Users\Acer\Documents\_CODES\engine-zig-typescript\src\engine_zig\resources\timer.zig
-21667 5066549581011557 1787242477051121900 da714bf93abe049cbec17c6e54d03177 0 C:\Users\Acer\Documents\_CODES\engine-zig-typescript\src\engine_zig\resources\asset_manager.zig
-2724 562949953582917 1787354042276195500 711fdb67085c7629c058337a02cd7fda 0 C:\Users\Acer\Documents\_CODES\engine-zig-typescript\src\engine_zig\scenes\scene_layers\scene_layer.zig
-2389 562949953582918 1787354042277311900 3ef23d65170e5029604cd482b237e5f3 0 C:\Users\Acer\Documents\_CODES\engine-zig-typescript\src\engine_zig\scenes\scene_layers\simple_scene_layer.zig
-867 562949953582916 1787354042274164700 97c2213357e8252a7517288cf950ff8e 0 C:\Users\Acer\Documents\_CODES\engine-zig-typescript\src\engine_zig\scenes\scene_layers\i_scene_layer.zig
-2441 562949953582913 1787354042274164700 428d954d6fa27677af1cf3cf604457d7 0 C:\Users\Acer\Documents\_CODES\engine-zig-typescript\src\engine_zig\scenes\base_scene.zig
-4485 562949953582914 1787354042274164700 9292f662cf47cd9f0c43f0a4fe0f3364 0 C:\Users\Acer\Documents\_CODES\engine-zig-typescript\src\engine_zig\scenes\i_scene.zig
-997 2814749767342242 1787155047698192300 e803e3e3a81e48e6221bef21c4d5d826 0 C:\Users\Acer\Documents\_CODES\engine-zig-typescript\src\engine_zig\raylib.zig
-956 562949953582919 1787354042278312300 b4442483599f8e3a5d4a0f327df786a5 0 C:\Users\Acer\Documents\_CODES\engine-zig-typescript\src\engine_zig\sprites\i_sprite.zig
+1212 6473924464564811 1787217779996201800 69f7d43a77f6eb683ee0c34bb34ef0d7 0 C:\Users\Acer\Documents\_CODES\engine-zig-typescript\build.zig

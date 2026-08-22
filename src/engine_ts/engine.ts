@@ -1,6 +1,7 @@
 import { IScene } from "./scenes/i_scene";
 import { InputManager } from "./resources/input_manager";
-import { timer } from "./lib/timer";
+import { timer } from "./resources/timer";
+import { GameScene } from "../game_ts/scenes/game_scene";
 
 class Engine {
 
@@ -14,11 +15,8 @@ class Engine {
     public currentScene!: IScene;
     public loadingScene!: IScene;
 
-    private isLoading: boolean = false;
-    private hasRenderedLoadingOnce: boolean = false;
-    private hasStartedInit: boolean = false;
-    private isReady: boolean = false;
-    private sceneToLoad!: IScene;
+    private isSceneLoading: boolean = false;
+    private isSceneReady: boolean = false;
 
     /**********************************************************/
     /** FUNÇÕES DE INICIALIZAÇÃO */
@@ -34,7 +32,11 @@ class Engine {
             // Atalhos de resolução de vídeo
             if (e.code === "F1") { e.preventDefault(); this.setVideoMode('1x'); }
             else if (e.code === "F2") { e.preventDefault(); this.setVideoMode('2x'); }
-            else if (e.code === "F3") { e.preventDefault(); this.setVideoMode('3x'); }
+            else if (e.code === "F3") {
+                e.preventDefault();
+                const gameScene = new GameScene();
+                this.changeScene(gameScene, 60);
+            }
             else if (e.code === "F11") {
                 e.preventDefault();
                 if (document.fullscreenElement) {
@@ -104,12 +106,11 @@ class Engine {
 
     /** Troca a cena. Recebe a interface VTable da proxima cena e o tempo minimo para a mudança */
     public changeScene(nextScene: IScene, minTicks: number = 60) {
-        this.sceneToLoad = nextScene;
-        this.isLoading = true;
-        this.hasRenderedLoadingOnce = false;
-        this.hasStartedInit = false;
-        this.isReady = false;
-
+        // limpar memória da cena anterior
+        //this.currentScene.deinit();
+        this.currentScene = nextScene;
+        this.isSceneLoading = true;
+        this.isSceneReady = false;
         timer.setAlarm(minTicks); // Inicia o registro no timer (Polling)
     }
 
@@ -117,11 +118,11 @@ class Engine {
     /** FUNÇÕES GAMELOOP */
     /**********************************************************/
 
-    public gameLoop(currentTime: number) {
+    public async gameLoop(currentTime: number) {
         timer.update(currentTime); // atualiza o timer
 
         // verifica se há um carregamento de tela em andamento
-        const renderScene = this.isLoading ? this.loadingScene : this.currentScene;
+        const renderScene = this.isSceneLoading ? this.loadingScene : this.currentScene;
 
         // atualiza a cena n vezes, de forma a compensar o possivel atraso de tempo
         while (timer.isDelay()) {
@@ -134,25 +135,14 @@ class Engine {
         const alpha = timer.getAlphaTime(); // calcula o alpha para a interpolacao
         renderScene.render(this.ctx, alpha); // renderiza a cena
 
-        // LÓGICA DE TRANSIÇÃO (100% SÍNCRONA / STATE MACHINE)
-        if (this.isLoading) {
-
-            // PASSO 1: Deixa o gameloop terminar 1 vez para o navegador pintar a tela de loading.
-            if (!this.hasRenderedLoadingOnce) {
-                this.hasRenderedLoadingOnce = true;
+        /** Mecânica de liberação da transição de cena (específico do TypeScript) */
+        if (this.isSceneLoading) { // se está carregando uma nova cena
+            if (!this.isSceneReady) { // se a nova ainda não foi inicializada
+                await this.currentScene.init(); // inicializa a nova cena
+                this.isSceneReady = true; // marca que a nova cena já foi inicializada
             }
-            // PASSO 2: Agora sim, aceitamos o "engasgo" e travamos a execução chamando init().
-            else if (!this.hasStartedInit) {
-                this.hasStartedInit = true;
-
-                this.sceneToLoad.init(); // Execução bloqueante, sem Promises!
-
-                this.isReady = true; // Assim que destravar, marcamos como pronto.
-            }
-            // PASSO 3: Checa se o minTicks já passou.
-            else if (this.isReady && timer.isAlarmFinished()) {
-                this.currentScene = this.sceneToLoad;
-                this.isLoading = false;
+            if (timer.isAlarmFinished()) { // ao termino do temporizador minimo de carregamento de cena
+                this.isSceneLoading = false; // marca o fim do carregamento da cena
             }
         }
 
